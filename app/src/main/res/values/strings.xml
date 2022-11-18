@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name" translatable="false">My Energy</string>
+    <string name="title_status">Status</string>
+    <string name="title_charging">Charging</string>
+    <string name="title_history">History</string>
+    <string name="title_settings">Settings</string>
+    <string name="lbl_status_grid">Grid Feed-in</string>
+    <string name="lbl_status_home">Home Consumption</string>
+    <string name="lbl_status_ev">Charging Rate</string>
+    <string name="lbl_status_pv">PV Production</string>
+    <string name="title_autonomy">Autonomy</string>
+    <string name="cp_title_plan">Charge Target</string>
+    <string name="cp_title_until">Until</string>
+    <string name="cp_title_state">Charge Level</string>
+    <string name="cp_title_total">Total</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="btn_next">Next</string>
+    <string name="btn_apply">Apply</string>
+    <string name="cp_title_time">Charge Time</string>
+    <string name="btn_cancel">Cancel</string>
+</resources>

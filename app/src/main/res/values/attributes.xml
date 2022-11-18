@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BatteryView">
+        <attr name="batteryPrimaryColor" format="color" />
+        <attr name="batterySecondaryColor" format="color" />
+        <attr name="batteryChargePrimary" format="float" />
+        <attr name="batteryChargeSecondary" format="float" />
+    </declare-styleable>
+    <declare-styleable name="EnergyFlowView">
+        <attr name="flowImage" format="reference" />
+        <attr name="flowDirection" format="enum" >
+            <enum name="flow_out" value="0" />
+            <enum name="flow_in" value="1" />
+        </attr>
+        <attr name="flowColor" format="color" />
+        <attr name="flowAmount" format="float" />
+        <attr name="flowLabel" format="string" />
+    </declare-styleable>
+</resources>

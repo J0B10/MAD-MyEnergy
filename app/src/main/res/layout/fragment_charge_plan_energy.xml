@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.charging.plan.ChargePlanEnergyFragment">
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="24dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/cp_lbl_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/cp_title_plan"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintEnd_toEndOf="@+id/cp_sel_plan"
+                app:layout_constraintTop_toTopOf="@+id/cp_guide_dwn" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toTopOf="@+id/cp_battery"
+                app:layout_constraintEnd_toStartOf="@+id/cp_info_plan"
+                app:layout_constraintStart_toEndOf="@+id/cp_info_state"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/cp_lbl_until"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/cp_title_until"
+                    android:textAlignment="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/cp_info_until"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="16:30"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cp_lbl_until"
+                    tools:ignore="HardcodedText" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <view
+                android:id="@+id/cp_sel_state"
+                class="com.ss.svs.SegmentedVerticalSeekBar"
+                android:layout_width="52dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="24dp"
+                app:cornerRadius="10dp"
+                app:currentValue="28"
+                app:isAllRadius="true"
+                app:layout_constraintBottom_toTopOf="@+id/cp_guide_dwn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/cp_guide_up"
+                app:maxValue="42"
+                app:progressColor="@color/variant_green"
+                app:step="1"
+                app:touchDisabled="false" />
+
+            <view
+                android:id="@+id/cp_battery"
+                class="io.github.j0b10.mad.myenergy.ui.views.BatteryView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="42dp"
+                android:layout_marginTop="160dp"
+                android:layout_marginEnd="42dp"
+                android:layout_marginBottom="160dp"
+                app:batteryChargePrimary="0.5"
+                app:batteryChargeSecondary="1"
+                app:batteryPrimaryColor="@color/variant_green"
+                app:batterySecondaryColor="@color/variant_blue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cp_sel_plan"
+                app:layout_constraintStart_toStartOf="@+id/cp_info_state"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/cp_guide_dwn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="42dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/cp_guide_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="24dp" />
+
+            <view
+                android:id="@+id/cp_sel_plan"
+                class="com.ss.svs.SegmentedVerticalSeekBar"
+                android:layout_width="52dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="24dp"
+                app:cornerRadius="10dp"
+                app:currentValue="42"
+                app:isAllRadius="true"
+                app:layout_constraintBottom_toTopOf="@+id/cp_guide_dwn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/cp_guide_up"
+                app:layout_constraintVertical_bias="0.0"
+                app:maxValue="42"
+                app:progressColor="@color/variant_blue"
+                app:step="1"
+                app:touchDisabled="false" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cp_info_plan"
+                android:layout_width="52dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/cp_guide_dwn"
+                app:layout_constraintEnd_toStartOf="@+id/cp_sel_plan"
+                app:layout_constraintTop_toTopOf="@+id/cp_guide_up">
+
+                <TextView
+                    android:id="@+id/cp_info_plan_kwh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="42 kWh"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/variant_blue"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/cp_info_plan_pc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/cp_info_plan_pc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="100%"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/variant_blue"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/cp_guide_plan"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/cp_guide_plan"
+                    tools:ignore="HardcodedText" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/cp_guide_plan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.06" />
+
+                <TextView
+                    android:id="@+id/cp_info_plan_km"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="260 km"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/variant_blue"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cp_info_plan_pc"
+                    tools:ignore="HardcodedText" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cp_info_state"
+                android:layout_width="52dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/cp_sel_state"
+                app:layout_constraintStart_toEndOf="@+id/cp_sel_state"
+                app:layout_constraintTop_toTopOf="@+id/cp_sel_state">
+
+                <TextView
+                    android:id="@+id/cp_info_state_kwh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="28 kWh"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/variant_green"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/cp_info_state_pc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/cp_info_state_pc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="66%"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/variant_green"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/cp_guide_state"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/cp_guide_state"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/cp_info_state_km"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="188 km"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/variant_green"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cp_info_state_pc"
+                    tools:ignore="HardcodedText" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/cp_guide_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.34" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/cp_lbl_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/cp_title_state"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintStart_toStartOf="@+id/cp_sel_state"
+                app:layout_constraintTop_toTopOf="@+id/cp_guide_dwn" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cp_info_plan"
+                app:layout_constraintStart_toEndOf="@+id/cp_info_state"
+                app:layout_constraintTop_toBottomOf="@+id/cp_battery">
+
+                <TextView
+                    android:id="@+id/cp_lbl_total"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/cp_title_total"
+                    android:textAlignment="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/cp_info_total"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="14 kWh"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cp_lbl_total"
+                    app:layout_constraintVertical_bias="1.0"
+                    tools:ignore="HardcodedText" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

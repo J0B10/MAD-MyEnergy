@@ -1,0 +1,19 @@
+<resources>
+    <string name="title_status">Status</string>
+    <string name="title_charging">Laden</string>
+    <string name="title_history">Historie</string>
+    <string name="title_settings">Einstellungen</string>
+    <string name="lbl_status_grid">Netzeinspeisung</string>
+    <string name="lbl_status_home">Gebäudeverbrauch</string>
+    <string name="lbl_status_ev">Ladeleistung</string>
+    <string name="lbl_status_pv">PV-Erzeugung</string>
+    <string name="title_autonomy">Autonomiegrad</string>
+    <string name="cp_title_plan">Ladeziel</string>
+    <string name="cp_title_until">Bis</string>
+    <string name="cp_title_state">Ladestand</string>
+    <string name="cp_title_total">Gesamtmenge</string>
+    <string name="btn_next">Weiter</string>
+    <string name="btn_apply">Anwenden</string>
+    <string name="cp_title_time">Ladezeit</string>
+    <string name="btn_cancel">Abbrechen</string>
+</resources>
