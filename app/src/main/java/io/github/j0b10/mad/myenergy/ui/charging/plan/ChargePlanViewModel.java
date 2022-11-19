@@ -9,6 +9,7 @@ public class ChargePlanViewModel extends ViewModel {
 
     final MutableLiveData<Float> carWLTP;
     final MutableLiveData<Integer> carCapacity;
+    final MutableLiveData<LocalDateTime> startTime;
     final MutableLiveData<LocalDateTime> planTime;
     final MutableLiveData<Integer> planCharge;
     final MutableLiveData<Integer> stateCharge;
@@ -19,6 +20,7 @@ public class ChargePlanViewModel extends ViewModel {
         stateCharge = new MutableLiveData<>(0);
         planCharge = new MutableLiveData<>(0);
         total = new MutableLiveData<>(0);
+        startTime = new MutableLiveData<>();
         planTime = new MutableLiveData<>();
         carCapacity = new MutableLiveData<>(40);
     }

@@ -16,4 +16,6 @@
     <string name="btn_apply">Anwenden</string>
     <string name="cp_title_time">Ladezeit</string>
     <string name="btn_cancel">Abbrechen</string>
+    <string name="cp_title_from" >Von</string>
+    <string name="cp_title_duration" >Dauer</string>
 </resources>

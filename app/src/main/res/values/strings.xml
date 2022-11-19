@@ -18,4 +18,6 @@
     <string name="btn_apply">Apply</string>
     <string name="cp_title_time">Charge Time</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="cp_title_from" >From</string>
+    <string name="cp_title_duration" >Duration</string>
 </resources>
