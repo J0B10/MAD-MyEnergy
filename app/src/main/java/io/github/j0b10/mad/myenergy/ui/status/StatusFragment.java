@@ -1,17 +1,27 @@
 package io.github.j0b10.mad.myenergy.ui.status;
 
 
+import static com.google.android.material.R.attr;
+import static com.google.android.material.color.MaterialColors.getColor;
+
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.github.j0b10.mad.myenergy.databinding.FragmentStatusBinding;
+import io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView;
+import io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView.Direction;
 
 public class StatusFragment extends Fragment {
 
@@ -32,27 +42,21 @@ public class StatusFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-    /*
-        EnergyFlowFragment homeFragment = binding.statusHomeView.getFragment();
-        EnergyFlowFragment evFragment = binding.statusEvView.getFragment();
-        EnergyFlowFragment pvFragment = binding.statusPvView.getFragment();
-        homeModel = homeFragment.requireViewModel();
-        evModel = evFragment.requireViewModel();
-        pvModel = pvFragment.requireViewModel();
+        LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
-        model.gridFeedIn.observe(getViewLifecycleOwner(), this::onGridFeedInChange);
-        model.homeConsumption.observe(getViewLifecycleOwner(), observePositiveFlowRate(homeModel, attr.colorError));
-        model.evConsumption.observe(getViewLifecycleOwner(), observePositiveFlowRate(evModel, attr.colorPrimary));
-        model.pvProduction.observe(getViewLifecycleOwner(), observePositiveFlowRate(pvModel, attr.colorSecondary));
-
-        homeModel.flowDirection.postValue(EnergyFlowDirection.IN);
-        evModel.flowDirection.postValue(EnergyFlowDirection.IN);
+        model.gridFeedIn.observe(lifecycleOwner, this::onGridFeedInChange);
+        model.homeConsumption.observe(lifecycleOwner,
+                observePositiveFlowRate(binding.statusHomeView, attr.colorError));
+        model.evConsumption.observe(lifecycleOwner,
+                observePositiveFlowRate(binding.statusEvView, attr.colorPrimary));
+        model.pvProduction.observe(lifecycleOwner,
+                observePositiveFlowRate(binding.statusPvView, attr.colorSecondary));
 
         //Test values
         model.pvProduction.postValue(4.43);
-        model.evConsumption.postValue(3.333);
+        model.evConsumption.postValue(10.5);
         model.homeConsumption.postValue(0.680);
-        model.gridFeedIn.postValue(4.43 - 3.333 - 0.680);*/
+        model.gridFeedIn.postValue(4.43 - 10.5 - 0.680);
     }
 
     @Override
@@ -60,36 +64,27 @@ public class StatusFragment extends Fragment {
         super.onDestroy();
         binding = null;
     }
-/*
+
     private void onGridFeedInChange(double newVal) {
-        @ColorInt int colorPositive = MaterialColors.getColor(requireContext(), attr.colorSecondary, Color.GRAY);
-        @ColorInt int colorNegative = MaterialColors.getColor(requireContext(), attr.colorError, Color.GRAY);
-        @ColorInt int colorNone = MaterialColors.getColor(requireContext(), attr.colorOnSurfaceVariant, Color.GRAY);
+        @ColorInt int colorPositive = getColor(requireContext(), attr.colorSecondary, Color.GRAY);
+        @ColorInt int colorNegative = getColor(requireContext(), attr.colorError, Color.GRAY);
+        @ColorInt int colorNone = getColor(requireContext(), attr.colorOutline, Color.GRAY);
+        binding.statusGridView.setFlowAmount(newVal);
         if (newVal < 0) {
-            gridModel.flowText.postValue(String.format(Locale.getDefault(), "-%.2f kW", newVal));
-            gridModel.color.postValue(colorNegative);
-            gridModel.flowDirection.postValue(EnergyFlowDirection.OUT);
+            binding.statusGridView.setFlowDirection(Direction.OUT);
+            binding.statusGridView.setFlowColor(colorNegative);
         } else {
-            gridModel.flowText.postValue(String.format(Locale.getDefault(), "+%.2f kW", newVal));
-            gridModel.flowDirection.postValue(EnergyFlowDirection.IN);
-            if (newVal == 0) {
-                gridModel.color.postValue(colorNone);
-            } else {
-                gridModel.color.postValue(colorPositive);
-            }
+            binding.statusGridView.setFlowDirection(Direction.IN);
+            binding.statusGridView.setFlowColor(newVal > 0 ? colorPositive : colorNone);
         }
-    }*/
-/*
-    private Observer<Double> observePositiveFlowRate(EnergyFlowViewModel model, @AttrRes int color) {
+    }
+
+    private Observer<Double> observePositiveFlowRate(EnergyFlowView view, @AttrRes int color) {
         return val -> {
-            @ColorInt int colorPositive = MaterialColors.getColor(requireContext(), color, Color.GRAY);
-            @ColorInt int colorNone = MaterialColors.getColor(requireContext(), attr.colorOnSurfaceVariant, Color.GRAY);
-            model.flowText.postValue(String.format(Locale.getDefault(), "%.2f kW", val));
-            if (val > 0) {
-                model.color.postValue(colorPositive);
-            } else {
-                model.color.postValue(colorNone);
-            }
+            @ColorInt int colorPositive = getColor(view.getContext(), color, Color.GRAY);
+            @ColorInt int colorNone = getColor(view.getContext(), attr.colorOutline, Color.GRAY);
+            view.setFlowAmount(val);
+            view.setFlowColor(val > 0 ? colorPositive : colorNone);
         };
-    }*/
+    }
 }

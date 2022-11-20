@@ -37,7 +37,7 @@
             app:cardCornerRadius="24dp"
             app:flowImage="@drawable/status_home"
             app:flowLabel="@string/lbl_status_home"
-            app:flowDirection="flow_in"/>
+            app:flowDirection="flow_out"/>
 
         <io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView
             style="@style/Widget.Material3.CardView.Elevated"
@@ -48,7 +48,7 @@
             app:cardCornerRadius="24dp"
             app:flowImage="@drawable/status_ev"
             app:flowLabel="@string/lbl_status_ev"
-            app:flowDirection="flow_in"/>
+            app:flowDirection="flow_out"/>
 
         <io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView
             style="@style/Widget.Material3.CardView.Elevated"
@@ -59,6 +59,6 @@
             app:cardCornerRadius="24dp"
             app:flowImage="@drawable/status_pv"
             app:flowLabel="@string/lbl_status_pv"
-            app:flowDirection="flow_out"/>
+            app:flowDirection="flow_in"/>
     </LinearLayout>
 </ScrollView>
