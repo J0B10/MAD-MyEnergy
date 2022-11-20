@@ -20,7 +20,7 @@ import io.github.j0b10.mad.myenergy.databinding.ActivityChargePlanBinding;
 
 public class ChargePlanActivity extends AppCompatActivity {
 
-    static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:ss");
+    static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     private static final List<Integer> TAB_LABEL_RES_IDS = List.of(
             R.string.cp_title_time, R.string.cp_title_plan

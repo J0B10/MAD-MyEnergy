@@ -33,10 +33,11 @@
                 app:trp_sliderWidth="36dp"
                 app:trp_thumbColor="@color/variant_yellow_dark"
                 app:trp_thumbIconEnd="@drawable/battery_full"
-                app:trp_thumbIconSize="24dp"
                 app:trp_thumbIconStart="@drawable/battery_empty"
+                app:trp_thumbIconSize="24dp"
                 app:trp_thumbSize="32dp"
-                app:trp_thumbSizeActiveGrow="1.4" />
+                app:trp_thumbSizeActiveGrow="1.4"
+                app:trp_stepTimeMinutes="5"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/trp"

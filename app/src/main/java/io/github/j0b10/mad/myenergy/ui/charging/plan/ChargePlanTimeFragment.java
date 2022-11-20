@@ -1,11 +1,10 @@
 package io.github.j0b10.mad.myenergy.ui.charging.plan;
 
+import static java.lang.String.format;
 import static io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity.TIME_FORMAT;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +16,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.R.attr;
 import com.google.android.material.color.MaterialColors;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.Optional;
+import java.util.Objects;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.FragmentChargePlanTimeBinding;
@@ -39,6 +39,12 @@ public class ChargePlanTimeFragment extends Fragment implements TimeRangePicker.
         return new TimeRangePicker.Time(time.getHour(), time.getMinute());
     }
 
+    static LocalDateTime round5Min(LocalDateTime time) {
+        int mod = time.getMinute() % 5;
+        int correction = mod < 3 ? -mod : 5 - mod;
+        return time.plusMinutes(correction);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class ChargePlanTimeFragment extends Fragment implements TimeRangePicker.
         );
         //until time info
         model.planTime.observe(owner, time ->
-                binding.cpInfoFrom.setText(TIME_FORMAT.format(time))
+                binding.cpInfoUntil.setText(TIME_FORMAT.format(time))
         );
 
         //duration time info
@@ -68,7 +74,7 @@ public class ChargePlanTimeFragment extends Fragment implements TimeRangePicker.
     @Override
     public void onResume() {
         super.onResume();
-        //todo set default charging time in config
+        //todo set default charging duration in config
         //fixme setting a custom end time is buggy as fuck.
         //probably must fork & fix https://github.com/Droppers/TimeRangePicker
         //maybe it's a compatibility issue? unit tests in forked repo seem to work but in this repo they don't
@@ -92,12 +98,12 @@ public class ChargePlanTimeFragment extends Fragment implements TimeRangePicker.
 
     @Override
     public void onDurationChange(@NonNull TimeRangePicker.TimeDuration timeDuration) {
-        Optional.ofNullable(model.startTime.getValue())
-                .map(time -> time.plus(timeDuration.getDuration()))
-                .ifPresent(model.planTime::setValue);
+        LocalDateTime startTime = Objects.requireNonNull(model.startTime.getValue());
+        LocalDateTime endTime = round5Min(startTime.plus(timeDuration.getDuration()));
+        model.planTime.setValue(endTime);
         if (timeDuration.getDurationMinutes() >= 720) {
             @ColorInt int color = MaterialColors.getColor(requireContext(),
-                    com.google.android.material.R.attr.colorTertiaryContainer, Color.GRAY);
+                    attr.colorTertiaryContainer, Color.GRAY);
             binding.picker.setSliderColor(color);
         } else {
             binding.picker.setSliderColorRes(R.color.variant_gray);
@@ -122,10 +128,7 @@ public class ChargePlanTimeFragment extends Fragment implements TimeRangePicker.
     private void updateDurationLbL(@Nullable LocalDateTime from, @Nullable LocalDateTime to) {
         if (from == null || to == null) return;
         Duration duration = Duration.between(from, to);
-        binding.cpInfoHH.setText(String.valueOf(duration.toHours()));
-        //backwards compatibility
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            binding.cpInfoMm.setText(String.format(Locale.getDefault(), "%2d", duration.toMinutesPart()));
-        }
+        binding.cpInfoHH.setText(format(Locale.getDefault(), "%02d", duration.toHours()));
+        binding.cpInfoMm.setText(format(Locale.getDefault(), "%02d", duration.toMinutes() % 60));
     }
 }
