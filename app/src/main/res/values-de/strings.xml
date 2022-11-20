@@ -18,4 +18,17 @@
     <string name="btn_cancel">Abbrechen</string>
     <string name="cp_title_from" >Von</string>
     <string name="cp_title_duration" >Dauer</string>
+    <string name="login_title_ip">EV Charger IP Adresse</string>
+    <string name="login_title_usr">Benutzer</string>
+    <string name="login_title_passwd">Passwort</string>
+    <string name="store_password">Passwort Speichern</string>
+    <string name="title_setup">Setup</string>
+    <string name="lbl_login">Anmelden</string>
+    <string name="lbl_scan">Scannen</string>
+    <string name="desc_scan">Einstellungen von QR-Code laden</string>
+    <string name="lbl_or">oder</string>
+    <string name="error_invalid_ip">%s ist keine gültige IPv4-Adresse!</string>
+    <string name="error_no_ip">Bitte gib eine IP-Addresse an!</string>
+    <string name="error_no_user">Bitte gib deinen Benutzernamen an!</string>
+    <string name="error_no_passwd">Bitte gib dein Password ein!</string>
 </resources>

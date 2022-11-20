@@ -207,7 +207,7 @@
                 app:layout_constraintTop_toTopOf="@+id/editTextTextPassword" />
 
             <EditText
-                android:id="@+id/editTextNumberDecimal"
+                android:id="@+id/login_ip_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -228,9 +228,9 @@
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="@+id/editTextNumberDecimal"
-                app:layout_constraintStart_toStartOf="@+id/editTextNumberDecimal"
-                app:layout_constraintTop_toBottomOf="@+id/editTextNumberDecimal" />
+                app:layout_constraintEnd_toEndOf="@+id/login_ip_layout"
+                app:layout_constraintStart_toStartOf="@+id/login_ip_layout"
+                app:layout_constraintTop_toBottomOf="@+id/login_ip_layout" />
 
             <EditText
                 android:id="@+id/editTextTextPassword"

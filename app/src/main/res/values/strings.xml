@@ -13,11 +13,23 @@
     <string name="cp_title_until">Until</string>
     <string name="cp_title_state">Charge Level</string>
     <string name="cp_title_total">Total</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="btn_next">Next</string>
     <string name="btn_apply">Apply</string>
     <string name="cp_title_time">Charge Time</string>
     <string name="btn_cancel">Cancel</string>
     <string name="cp_title_from" >From</string>
     <string name="cp_title_duration" >Duration</string>
+    <string name="login_title_ip">EV Charger IP Address</string>
+    <string name="login_title_usr">User</string>
+    <string name="login_title_passwd">Password</string>
+    <string name="store_password">Store Password</string>
+    <string name="title_setup">Setup</string>
+    <string name="lbl_login">Login</string>
+    <string name="lbl_scan">Scan</string>
+    <string name="desc_scan">Load settings from QR code</string>
+    <string name="lbl_or">or</string>
+    <string name="error_invalid_ip">%s is not a valid IPv4 address!</string>
+    <string name="error_no_ip">Please specify the IP address!</string>
+    <string name="error_no_user">Please enter your username!</string>
+    <string name="error_no_passwd">Please enter your password!</string>
 </resources>
