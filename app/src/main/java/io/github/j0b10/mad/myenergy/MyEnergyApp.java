@@ -31,7 +31,7 @@ public class MyEnergyApp extends Application {
                     String ipAddress = data.getStringExtra(LoginActivity.PARAM_EV_CHARGER_IP);
                     String user = data.getStringExtra(LoginActivity.PARAM_USERNAME);
                     String password = data.getStringExtra(LoginActivity.PARAM_PASSWORD);
-                    account.putCredentials(ipAddress, user, password);
+                    account.putCredentials(ipAddress, user, password, null);
                 }
             }).launch(new Intent(getApplicationContext(), LoginActivity.class));
         }

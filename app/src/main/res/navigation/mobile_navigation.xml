@@ -19,9 +19,8 @@
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="io.github.j0b10.mad.myenergy.ui.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        android:name="io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment"
+        android:label="@string/title_settings" />
     <fragment
         android:id="@+id/navigation_history"
         android:name="io.github.j0b10.mad.myenergy.ui.history.HistoryFragment"

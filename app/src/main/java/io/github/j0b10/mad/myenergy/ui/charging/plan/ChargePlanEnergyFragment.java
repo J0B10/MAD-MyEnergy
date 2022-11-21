@@ -2,8 +2,12 @@
 package io.github.j0b10.mad.myenergy.ui.charging.plan;
 
 import static io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity.TIME_FORMAT;
+import static io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment.KEY_CAR_BATTERY;
+import static io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment.KEY_CAR_WLTP;
+import static io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment.KEY_CHARGE_PLAN_AMOUNT;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +27,12 @@ import com.ss.svs.SegmentedVerticalSeekBar;
 import java.time.format.DateTimeFormatter;
 
 import io.github.j0b10.mad.myenergy.databinding.FragmentChargePlanEnergyBinding;
+import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 public class ChargePlanEnergyFragment extends Fragment {
 
-
+    private int carCapacity;
+    private float carWLTP;
     private FragmentChargePlanEnergyBinding binding;
     private ChargePlanViewModel model;
 
@@ -45,6 +52,13 @@ public class ChargePlanEnergyFragment extends Fragment {
 
         LifecycleOwner owner = getViewLifecycleOwner();
 
+        //load preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        carCapacity = Math.round(Float.parseFloat(preferences.getString(KEY_CAR_BATTERY, "50")));
+        carWLTP = Float.parseFloat(preferences.getString(KEY_CAR_WLTP, "15.0"));
+        int defaultAmount = Integer.parseInt(preferences.getString(KEY_CHARGE_PLAN_AMOUNT, "0"));
+        model.planCharge.setValue(defaultAmount);
+
         addPlanConstraints();
 
         //target time label
@@ -58,8 +72,8 @@ public class ChargePlanEnergyFragment extends Fragment {
         model.total.observe(owner, value -> binding.cpInfoTotal.setText(value + " kWh"));
 
         //maxima
-        model.carCapacity.observe(owner, binding.cpSelState::setMax);
-        model.carCapacity.observe(owner, binding.cpSelPlan::setMax);
+        binding.cpSelState.setMax(carCapacity);
+        binding.cpSelPlan.setMax(carCapacity);
 
         //info labels
         model.planCharge.observe(owner, value -> {
@@ -106,13 +120,11 @@ public class ChargePlanEnergyFragment extends Fragment {
     }
 
     private int carRangeKm(int charge) {
-        //noinspection ConstantConditions
-        return Math.round(charge * 100 / model.carWLTP.getValue());
+        return Math.round(charge * 100 / carWLTP);
     }
 
     private float chargePercentage(int chargeValue) {
-        //noinspection ConstantConditions
-        return (float) chargeValue / model.carCapacity.getValue();
+        return (float) chargeValue / carCapacity;
     }
 
     private void calcTotal() {

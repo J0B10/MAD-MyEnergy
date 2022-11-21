@@ -1,0 +1,64 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:enabled="false"
+        app:icon="@drawable/qr_code"
+        app:key="qr"
+        app:title="QR Code Import / Export">
+        <Preference
+            app:key="qr_scan"
+            app:summary="Configure the app by Scanning a qr code. All settings will be overwritten by the ones from the QR code.\nOnly scan codes you trust!"
+            app:title="Scan QR Code" />
+        <Preference
+            app:key="qr_gen"
+            app:summary="Share your configuration with others by exporting it as QR code.\nShared settings do contain your password!"
+            app:title="Generate QR Code" />
+    </PreferenceCategory>
+    <PreferenceCategory app:key="connect">
+        <SwitchPreference
+            app:defaultValue="false"
+            app:key="demo"
+            app:summaryOff="Display random data.\nAllows showcasing the app without connecting an EV Charger."
+            app:title="Demo Mode" />
+        <Preference
+            app:key="login"
+            app:summary="Open Login dialog to modify the IP address of the connected EV Charger, your username or the password"
+            app:title="Login" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="car"
+        app:title="Car Settings">
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            app:defaultValue="50"
+            app:key="car_battery"
+            app:summary="The usable capacity of the cars battery. \nUnit: kwh"
+            app:title="Battery Capacity" />
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            app:defaultValue="15.0"
+            app:key="car_wltp"
+            app:summary="Amount of energy consumed per 100km driven. \nUnit: kWh/100km"
+            app:title="Energy Consumption" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="cp"
+        app:title="Charging Plan Settings">
+        <EditTextPreference
+            android:inputType="number"
+            app:defaultValue="0"
+            app:key="cp_amount"
+            app:summary="How much should be charged by default. \nUnit: kwh"
+            app:title="Default Amount" />
+        <EditTextPreference
+            android:inputType="number"
+            app:defaultValue="10800"
+            app:enabled="false"
+            app:key="cp_time"
+            app:summary="How long charging should take by default. \nUnit: min"
+            app:title="Default Duration" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
