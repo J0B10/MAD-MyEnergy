@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 
 import io.github.j0b10.mad.myenergy.model.authentication.AccountPreferences;
+import io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity;
 import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
 
 /**
@@ -27,13 +28,16 @@ public class MyEnergyApp extends Application {
         if (!account.isLoginStored()) {
             activity.registerForActivityResult(new StartActivityForResult(), result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    Intent data  = result.getData();
+                    Intent data = result.getData();
                     String ipAddress = data.getStringExtra(LoginActivity.PARAM_EV_CHARGER_IP);
                     String user = data.getStringExtra(LoginActivity.PARAM_USERNAME);
                     String password = data.getStringExtra(LoginActivity.PARAM_PASSWORD);
                     account.putCredentials(ipAddress, user, password, null);
                 }
-            }).launch(new Intent(getApplicationContext(), LoginActivity.class));
+            }).launch(
+                    new Intent(getApplicationContext(), LoginActivity.class)
+                            .putExtra(LoginActivity.PARAM_BACK_ALLOWED, true)
+            );
         }
     }
 }

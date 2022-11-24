@@ -23,7 +23,7 @@ public class ChargingFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(ChargingViewModel.class);
         binding = FragmentChargingBinding.inflate(inflater, container, false);
-        binding.button4.setOnClickListener(this::onStartCharging);
+        binding.chargingBtn.setOnClickListener(this::onStartCharging);
         return binding.getRoot();
     }
 
