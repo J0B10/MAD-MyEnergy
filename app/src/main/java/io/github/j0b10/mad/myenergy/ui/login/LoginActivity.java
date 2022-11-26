@@ -1,7 +1,5 @@
 package io.github.j0b10.mad.myenergy.ui.login;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -20,6 +18,8 @@ import java.util.Optional;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.ActivityLoginBinding;
+import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
+import io.github.j0b10.mad.myenergy.model.evcharger.authentication.AccountPreferences;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
             PARAM_SAVE_PASSWORD = "save-pass",
             PARAM_BACK_ALLOWED = "back";
 
+    private SessionManager sessionManager;
     private ActivityLoginBinding binding;
     private IPv4AddressFilter ipv4Filter;
     private boolean backAllowed;
@@ -46,17 +47,18 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Intent intent = getIntent();
-        Optional<String> ip = Optional.ofNullable(intent.getStringExtra(PARAM_EV_CHARGER_IP));
-        Optional<String> username = Optional.ofNullable(intent.getStringExtra(PARAM_USERNAME));
-        backAllowed = intent.getBooleanExtra(PARAM_BACK_ALLOWED, false);
+        sessionManager = SessionManager.getInstance(getApplicationContext());
+        AccountPreferences accountPreferences = sessionManager.getAccountPreferences();
 
         binding.loginBtn.setOnClickListener(this::onLoginClicked);
         ipv4Filter = new IPv4AddressFilter();
         binding.loginIpInput.setFilters(new InputFilter[]{ipv4Filter});
 
-        ip.ifPresent(binding.loginIpInput::setText);
-        username.ifPresent(binding.loginUsrInput::setText);
+        backAllowed = getIntent().getBooleanExtra(PARAM_BACK_ALLOWED, false);
+        if (accountPreferences.isLoginStored()) {
+            binding.loginIpInput.setText(accountPreferences.getIpAddress());
+            binding.loginUsrInput.setText(accountPreferences.getUsername());
+        }
     }
 
     @Override
@@ -64,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
         binding = null;
         ipv4Filter = null;
+        sessionManager = null;
     }
 
     @Override
@@ -77,28 +80,30 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
+        /*
         Editable ip = binding.loginIpInput.getText();
         outState.putString(PARAM_EV_CHARGER_IP, ip != null ? ip.toString() : null);
         Editable username = binding.loginUsrInput.getText();
         outState.putString(PARAM_USERNAME, username != null ? username.toString() : null);
         Editable password = binding.loginPasswdInput.getText();
         outState.putString(PARAM_PASSWORD, password != null ? password.toString() : null);
-        outState.putBoolean(PARAM_SAVE_PASSWORD, binding.loginSavePasswdCheck.isChecked());
+        outState.putBoolean(PARAM_SAVE_PASSWORD, binding.loginSavePasswdCheck.isChecked());*/
         outState.putBoolean(PARAM_BACK_ALLOWED, backAllowed);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        /*
         Optional<String> ip = Optional.ofNullable(savedInstanceState.getString(PARAM_EV_CHARGER_IP));
         Optional<String> username = Optional.ofNullable(savedInstanceState.getString(PARAM_USERNAME));
         Optional<String> password = Optional.ofNullable(savedInstanceState.getString(PARAM_PASSWORD));
         boolean storePassword = savedInstanceState.getBoolean(PARAM_SAVE_PASSWORD, false);
-        backAllowed = savedInstanceState.getBoolean(PARAM_BACK_ALLOWED, false);
         ip.ifPresent(binding.loginIpInput::setText);
         username.ifPresent(binding.loginUsrInput::setText);
         password.ifPresent(binding.loginPasswdInput::setText);
-        binding.loginSavePasswdCheck.setChecked(storePassword);
+        binding.loginSavePasswdCheck.setChecked(storePassword);*/
+        backAllowed = savedInstanceState.getBoolean(PARAM_BACK_ALLOWED, false);
     }
 
     private void onLoginClicked(View button) {
@@ -115,13 +120,17 @@ public class LoginActivity extends AppCompatActivity {
         } else if (password == null || password.toString().isEmpty()) {
             showErrorMsg(button, R.string.error_no_passwd);
         } else {
-            Intent result = new Intent()
-                    .putExtra(PARAM_EV_CHARGER_IP, ipAddress)
-                    .putExtra(PARAM_USERNAME, username)
-                    .putExtra(PARAM_PASSWORD, password)
-                    .putExtra(PARAM_SAVE_PASSWORD, savePassword);
-            setResult(Activity.RESULT_OK, result);
-            finish();
+            sessionManager.login(
+                    ipAddress.toString(),
+                    username.toString(),
+                    password.toString(),
+                    savePassword
+            );
         }
+    }
+
+    private void onLogin() {
+        setResult(RESULT_OK);
+        finish();
     }
 }

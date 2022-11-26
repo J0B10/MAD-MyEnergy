@@ -1,5 +1,6 @@
 package io.github.j0b10.mad.myenergy.ui.views;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -8,17 +9,23 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.LayoutBatteryBinding;
 
 @SuppressWarnings("unused")
 public class BatteryView extends ConstraintLayout {
+
+    private static final long ANIMATION_BASE_DURATION = 6000;
 
     private static final float DEFAULT_WIDTH = 768;
     private static final float DEFAULT_TOP_HEIGHT = 168;
@@ -39,6 +46,9 @@ public class BatteryView extends ConstraintLayout {
 
     private float batteryChargePrimary;
     private float batteryChargeSecondary;
+
+    private ValueAnimator primaryChargeAnimator;
+    private ValueAnimator secondaryChargeAnimator;
 
     private LayoutBatteryBinding binding;
 
@@ -134,5 +144,24 @@ public class BatteryView extends ConstraintLayout {
         }
 
         super.onDraw(canvas);
+    }
+
+    private static ValueAnimator newChargeAnimator(Consumer<Float> onValueChange) {
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f)
+                .setDuration((long) (ANIMATION_BASE_DURATION));
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.addUpdateListener(a -> onValueChange.accept((float) a.getAnimatedValue()));
+        return animator;
+    }
+
+    public ValueAnimator animatePrimaryCharge() {
+        return Optional.ofNullable(primaryChargeAnimator)
+                .orElseGet(() -> primaryChargeAnimator = newChargeAnimator(this::setChargePrimary));
+    }
+
+    public ValueAnimator animateSecondaryCharge() {
+        return Optional.ofNullable(secondaryChargeAnimator)
+                .orElseGet(() -> secondaryChargeAnimator = newChargeAnimator(this::setChargeSecondary));
     }
 }
