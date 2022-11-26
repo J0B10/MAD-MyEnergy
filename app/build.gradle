@@ -34,6 +34,7 @@ android {
 dependencies {
 
     implementation 'at.favre.lib:armadillo:1.0.0'
+    implementation "com.leinardi.android:speed-dial:3.3.0"
     implementation 'io.github.smartsensesolutions:SegmentedVerticalSeekBar:1.0.1'
     implementation 'nl.joery.timerangepicker:timerangepicker:1.0.0'
 
