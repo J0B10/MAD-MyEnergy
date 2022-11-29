@@ -1,6 +1,5 @@
 package io.github.j0b10.mad.myenergy;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -14,7 +13,6 @@ import androidx.preference.PreferenceManager;
 
 import io.github.j0b10.mad.myenergy.databinding.ActivityMainBinding;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
-import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 /**
@@ -30,7 +28,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requireLogin();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
+
+        if (!demoMode) {
+            SessionManager.getInstance(this).requireLoginSync(this);
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -55,13 +58,4 @@ public class MainActivity extends AppCompatActivity {
         binding = null;
     }
 
-    private void requireLogin() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
-        boolean loggedIn = SessionManager.getInstance(getApplicationContext()).isLoggedIn();
-        if (!demoMode && !loggedIn) {
-            startActivity(new Intent(getBaseContext(), LoginActivity.class)
-                    .putExtra(LoginActivity.PARAM_BACK_ALLOWED, true)); //TODO Disallow
-        }
-    }
 }

@@ -3,6 +3,9 @@ package io.github.j0b10.mad.myenergy.model.evcharger.authentication;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ConcurrentModificationException;
 import java.util.Optional;
 
@@ -13,10 +16,9 @@ public final class AccountPreferences {
     private static final String KEY_IP_ADDRESS = "ip",
             KEY_USERNAME = "user",
             KEY_PASSWORD = "pass",
-            KEY_AUTH_TOKEN = "token";
+            KEY_REFRESH_TOKEN = "token";
 
     private final SharedPreferences preferencesStore;
-    private String password;
 
     public AccountPreferences(SharedPreferences preferencesStore) {
         this.preferencesStore = preferencesStore;
@@ -30,20 +32,19 @@ public final class AccountPreferences {
         );
     }
 
-    public void putCredentials(final String ip, final String username, final String password, final boolean storePassword) throws ConcurrentModificationException {
+    public void putCredentials(final String ip, final String username, @Nullable final String password) throws ConcurrentModificationException {
         SharedPreferences.Editor editor = preferencesStore.edit()
                 .putString(KEY_IP_ADDRESS, ip)
-                .putString(KEY_USERNAME, username);
-        if (storePassword) editor.putString(KEY_PASSWORD, password);
+                .putString(KEY_USERNAME, username)
+                .putString(KEY_PASSWORD, password);
         if (!editor.commit()) {
             throw new ConcurrentModificationException("Unable to store credentials: Multiple concurrent modifications.");
         }
-        this.password = password;
     }
 
-    public void putToken(final String token) throws ConcurrentModificationException {
+    public void putRefreshToken(final String token) throws ConcurrentModificationException {
         SharedPreferences.Editor editor = preferencesStore.edit()
-                .putString(KEY_AUTH_TOKEN, token);
+                .putString(KEY_REFRESH_TOKEN, token);
         if (!editor.commit()) {
             throw new ConcurrentModificationException("Unable to store credentials: Multiple concurrent modifications.");
         }
@@ -60,12 +61,8 @@ public final class AccountPreferences {
         return preferencesStore.getString(KEY_PASSWORD, null) != null;
     }
 
-    public boolean isPasswordAvailable() {
-        return password != null || preferencesStore.getString(KEY_PASSWORD, null) != null;
-    }
-
-    public boolean isTokenStored() {
-        return preferencesStore.getString(KEY_AUTH_TOKEN, null) != null;
+    public boolean isRefreshTokenStored() {
+        return preferencesStore.getString(KEY_REFRESH_TOKEN, null) != null;
     }
 
     public String getIpAddress() {
@@ -79,13 +76,12 @@ public final class AccountPreferences {
     }
 
     public String getPassword() {
-        if (password != null) return password;
-        else if (isPasswordStored()) return preferencesStore.getString(KEY_PASSWORD, null);
-        else throw new IllegalStateException("no password stored");
+        return Optional.ofNullable(preferencesStore.getString(KEY_PASSWORD, null))
+                .orElseThrow(() -> new IllegalStateException("no password stored"));
     }
 
-    public String getAuthToken() {
-        return Optional.ofNullable(preferencesStore.getString(KEY_AUTH_TOKEN, null))
+    public String getRefreshToken() {
+        return Optional.ofNullable(preferencesStore.getString(KEY_REFRESH_TOKEN, null))
                 .orElseThrow(() -> new IllegalStateException("no token stored"));
     }
 
@@ -94,10 +90,9 @@ public final class AccountPreferences {
                 .remove(KEY_IP_ADDRESS)
                 .remove(KEY_USERNAME)
                 .remove(KEY_PASSWORD)
-                .remove(KEY_AUTH_TOKEN);
+                .remove(KEY_REFRESH_TOKEN);
         if (!editor.commit()) {
             throw new ConcurrentModificationException("unable to remove account: Multiple concurrent modifications.");
         }
-        this.password = null;
     }
 }

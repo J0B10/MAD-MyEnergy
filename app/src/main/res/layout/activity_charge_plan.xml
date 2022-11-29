@@ -34,6 +34,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cp_tab"/>
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/cp_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/cp_view_pager"
+        app:layout_constraintStart_toStartOf="@+id/cp_view_pager"
+        app:layout_constraintTop_toBottomOf="@+id/cp_tab"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cp_bottom_box"
         android:layout_width="0dp"

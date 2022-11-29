@@ -2,6 +2,7 @@ package io.github.j0b10.mad.myenergy.ui.charging.plan;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,6 +74,7 @@ public class ChargePlanActivity extends AppCompatActivity {
 
     private void apply() {
         //TODO on apply
+        binding.cpProgress.setVisibility(View.VISIBLE);
         setResult(Activity.RESULT_OK);
         finish();
     }

@@ -1,33 +1,33 @@
 package io.github.j0b10.mad.myenergy.ui.login;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.R.attr;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Optional;
-
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.ActivityLoginBinding;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
 import io.github.j0b10.mad.myenergy.model.evcharger.authentication.AccountPreferences;
+import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String PARAM_EV_CHARGER_IP = "ip",
-            PARAM_USERNAME = "user",
-            PARAM_PASSWORD = "pass",
-            PARAM_SAVE_PASSWORD = "save-pass",
-            PARAM_BACK_ALLOWED = "back";
+    public static final String PARAM_BACK_ALLOWED = "back";
 
     private SessionManager sessionManager;
     private ActivityLoginBinding binding;
@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        sessionManager = SessionManager.getInstance(getApplicationContext());
+        sessionManager = SessionManager.getInstance(this);
         AccountPreferences accountPreferences = sessionManager.getAccountPreferences();
 
         binding.loginBtn.setOnClickListener(this::onLoginClicked);
@@ -80,29 +80,12 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        /*
-        Editable ip = binding.loginIpInput.getText();
-        outState.putString(PARAM_EV_CHARGER_IP, ip != null ? ip.toString() : null);
-        Editable username = binding.loginUsrInput.getText();
-        outState.putString(PARAM_USERNAME, username != null ? username.toString() : null);
-        Editable password = binding.loginPasswdInput.getText();
-        outState.putString(PARAM_PASSWORD, password != null ? password.toString() : null);
-        outState.putBoolean(PARAM_SAVE_PASSWORD, binding.loginSavePasswdCheck.isChecked());*/
         outState.putBoolean(PARAM_BACK_ALLOWED, backAllowed);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        /*
-        Optional<String> ip = Optional.ofNullable(savedInstanceState.getString(PARAM_EV_CHARGER_IP));
-        Optional<String> username = Optional.ofNullable(savedInstanceState.getString(PARAM_USERNAME));
-        Optional<String> password = Optional.ofNullable(savedInstanceState.getString(PARAM_PASSWORD));
-        boolean storePassword = savedInstanceState.getBoolean(PARAM_SAVE_PASSWORD, false);
-        ip.ifPresent(binding.loginIpInput::setText);
-        username.ifPresent(binding.loginUsrInput::setText);
-        password.ifPresent(binding.loginPasswdInput::setText);
-        binding.loginSavePasswdCheck.setChecked(storePassword);*/
         backAllowed = savedInstanceState.getBoolean(PARAM_BACK_ALLOWED, false);
     }
 
@@ -120,16 +103,43 @@ public class LoginActivity extends AppCompatActivity {
         } else if (password == null || password.toString().isEmpty()) {
             showErrorMsg(button, R.string.error_no_passwd);
         } else {
+            binding.loginProgress.setVisibility(View.VISIBLE);
             sessionManager.login(
                     ipAddress.toString(),
                     username.toString(),
                     password.toString(),
-                    savePassword
+                    savePassword,
+                    this::onLogin,
+                    error -> {
+                        binding.loginProgress.setVisibility(View.GONE);
+                        Log.w("login", error);
+                        showErrorMsg(binding.getRoot(), R.string.login_error, error.getLocalizedMessage());
+                    }
             );
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_login_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.login_debug_sel) {
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            pref.edit().putBoolean(PreferencesFragment.KEY_DEMO, true).apply();
+            setResult(RESULT_OK);
+            finish();
+            return true;
+        }
+        return false;
+    }
+
     private void onLogin() {
+        binding.loginProgress.setVisibility(View.GONE);
+        Log.i("login", "Logged in!");
         setResult(RESULT_OK);
         finish();
     }

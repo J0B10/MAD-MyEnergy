@@ -37,4 +37,5 @@
     <string name="sd_lbl_speed">Schnellladen starten</string>
     <string name="sd_desc">Ladeoptionen anzeigen</string>
     <string name="lbl_battery_charge">Battery Charge</string>
+    <string name="login_error">Login fehlgeschlagen: %s</string>
 </resources>
