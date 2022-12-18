@@ -31,4 +31,11 @@
     <string name="error_no_ip">Bitte gib eine IP-Addresse an!</string>
     <string name="error_no_user">Bitte gib deinen Benutzernamen an!</string>
     <string name="error_no_passwd">Bitte gib dein Password ein!</string>
+    <string name="sd_lbl_stop">Laden stoppen</string>
+    <string name="sd_lbl_plan">Ladeplanung</string>
+    <string name="sd_lbl_excess">Überschussladen</string>
+    <string name="sd_lbl_speed">Schnellladen starten</string>
+    <string name="sd_desc">Ladeoptionen anzeigen</string>
+    <string name="lbl_battery_charge">Battery Charge</string>
+    <string name="login_error">Login fehlgeschlagen: %s</string>
 </resources>

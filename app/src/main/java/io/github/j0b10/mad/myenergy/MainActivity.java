@@ -1,5 +1,6 @@
 package io.github.j0b10.mad.myenergy;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,8 +9,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 import io.github.j0b10.mad.myenergy.databinding.ActivityMainBinding;
+import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
+import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 /**
  * Main Activity.
@@ -24,7 +28,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((MyEnergyApp) getApplication()).requireLogin(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
+
+        if (!demoMode) {
+            SessionManager.getInstance(this).requireLoginSync(this);
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -48,4 +57,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         binding = null;
     }
+
 }

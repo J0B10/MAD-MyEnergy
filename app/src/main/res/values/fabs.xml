@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="sd_stop_charging" type="id" />
+    <item name="sd_excess_charging" type="id" />
+    <item name="sd_plan_charging" type="id" />
+</resources>

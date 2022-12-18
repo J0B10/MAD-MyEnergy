@@ -32,4 +32,11 @@
     <string name="error_no_ip">Please specify the IP address!</string>
     <string name="error_no_user">Please enter your username!</string>
     <string name="error_no_passwd">Please enter your password!</string>
+    <string name="sd_lbl_stop">Stop charging</string>
+    <string name="sd_lbl_plan">Plan charging</string>
+    <string name="sd_lbl_excess">Excess charging</string>
+    <string name="sd_lbl_speed">Start fast charging</string>
+    <string name="sd_desc">Show charging actions</string>
+    <string name="lbl_battery_charge">Battery Charge</string>
+    <string name="login_error">Login failed: %s</string>
 </resources>

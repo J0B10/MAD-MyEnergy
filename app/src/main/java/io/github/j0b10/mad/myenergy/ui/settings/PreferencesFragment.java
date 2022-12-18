@@ -1,10 +1,14 @@
 package io.github.j0b10.mad.myenergy.ui.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import io.github.j0b10.mad.myenergy.R;
+import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
@@ -20,6 +24,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-
+        //noinspection ConstantConditions
+        findPreference(KEY_LOGIN).setOnPreferenceClickListener(preference -> {
+            startActivity(new Intent(requireContext(), LoginActivity.class)
+                    .putExtra(LoginActivity.PARAM_BACK_ALLOWED, true));
+            return true;
+        });
     }
 }
