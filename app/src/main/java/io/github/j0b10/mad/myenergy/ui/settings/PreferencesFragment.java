@@ -15,6 +15,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String
             KEY_LOGIN = "login",
             KEY_DEMO = "demo",
+            KEY_FETCH_RATE = "fetch_rate",
             KEY_CAR_WLTP = "car_wltp",
             KEY_CAR_BATTERY = "car_battery",
             KEY_CHARGE_PLAN_AMOUNT = "cp_amount",

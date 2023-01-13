@@ -15,7 +15,16 @@
             app:summary="Share your configuration with others by exporting it as QR code.\nShared settings do contain your password!"
             app:title="Generate QR Code" />
     </PreferenceCategory>
-    <PreferenceCategory app:key="connect">
+    <PreferenceCategory
+        app:key="connect"
+        app:title="Connected Chargers">
+        <EditTextPreference
+            android:defaultValue="5.0"
+            android:inputType="numberDecimal"
+            android:key="fetch_rate"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Fetch rate" />
         <SwitchPreference
             app:defaultValue="false"
             app:key="demo"
@@ -31,12 +40,15 @@
         app:title="Car Settings">
         <EditTextPreference
             android:inputType="numberDecimal"
+            android:singleLine="true"
+            android:selectAllOnFocus="true"
             app:defaultValue="50"
             app:key="car_battery"
             app:summary="The usable capacity of the cars battery. \nUnit: kwh"
             app:title="Battery Capacity" />
         <EditTextPreference
             android:inputType="numberDecimal"
+            android:singleLine="true"
             app:defaultValue="15.0"
             app:key="car_wltp"
             app:summary="Amount of energy consumed per 100km driven. \nUnit: kWh/100km"
@@ -48,12 +60,16 @@
         app:title="Charging Plan Settings">
         <EditTextPreference
             android:inputType="number"
+            android:singleLine="true"
+            android:selectAllOnFocus="true"
             app:defaultValue="0"
             app:key="cp_amount"
             app:summary="How much should be charged by default. \nUnit: kwh"
             app:title="Default Amount" />
         <EditTextPreference
             android:inputType="number"
+            android:singleLine="true"
+            android:selectAllOnFocus="true"
             app:defaultValue="10800"
             app:enabled="false"
             app:key="cp_time"

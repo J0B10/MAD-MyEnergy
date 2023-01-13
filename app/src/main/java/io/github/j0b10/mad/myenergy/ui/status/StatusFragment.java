@@ -21,6 +21,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
+import java.time.Duration;
+
 import io.github.j0b10.mad.myenergy.databinding.FragmentStatusBinding;
 import io.github.j0b10.mad.myenergy.model.demo.DemoStatusAdapter;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
@@ -43,12 +45,18 @@ public class StatusFragment extends Fragment {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
+        String fetchRateS = preferences.getString(PreferencesFragment.KEY_FETCH_RATE, "5.0");
+        Duration fetchInterval = Duration.ofMillis((long) (Float.parseFloat(fetchRateS) * 1000L));
 
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         if (demoMode) {
             status = new DemoStatusAdapter();
-        } else {
+            status.configureInterval(fetchInterval);
+        } else if (sessionManager.isLoggedIn()) {
             status = new EVStatusAdapter(sessionManager.getAPI());
+            status.configureInterval(fetchInterval);
+        } else {
+            status = null;
         }
 
         return binding.getRoot();
@@ -60,25 +68,27 @@ public class StatusFragment extends Fragment {
 
         LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
-        status.getGridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
-        status.getHomeConsumption().observe(lifecycleOwner,
-                observePositiveFlowRate(binding.statusHomeView, attr.colorError));
-        status.getEvConsumption().observe(lifecycleOwner,
-                observePositiveFlowRate(binding.statusEvView, attr.colorPrimary));
-        status.getPvProduction().observe(lifecycleOwner,
-                observePositiveFlowRate(binding.statusPvView, attr.colorSecondary));
+        if (status != null) {
+            status.getGridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
+            status.getHomeConsumption().observe(lifecycleOwner,
+                    observePositiveFlowRate(binding.statusHomeView, attr.colorError));
+            status.getEvConsumption().observe(lifecycleOwner,
+                    observePositiveFlowRate(binding.statusEvView, attr.colorPrimary));
+            status.getPvProduction().observe(lifecycleOwner,
+                    observePositiveFlowRate(binding.statusPvView, attr.colorSecondary));
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        status.start();
+        if (status != null) status.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        status.stop();
+        if (status != null) status.stop();
     }
 
     @Override
