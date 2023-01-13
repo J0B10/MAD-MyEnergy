@@ -7,6 +7,7 @@ import static com.google.android.material.color.MaterialColors.getColor;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.material.color.MaterialColors;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.time.Duration;
 
+import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.FragmentStatusBinding;
 import io.github.j0b10.mad.myenergy.model.demo.DemoStatusAdapter;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
@@ -36,6 +40,7 @@ public class StatusFragment extends Fragment {
 
     private FragmentStatusBinding binding;
 
+    private Snackbar errorMsg;
     private StatusProvider status;
 
     @Override
@@ -69,13 +74,14 @@ public class StatusFragment extends Fragment {
         LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
         if (status != null) {
-            status.getGridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
-            status.getHomeConsumption().observe(lifecycleOwner,
+            status.gridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
+            status.homeConsumption().observe(lifecycleOwner,
                     observePositiveFlowRate(binding.statusHomeView, attr.colorError));
-            status.getEvConsumption().observe(lifecycleOwner,
+            status.evConsumption().observe(lifecycleOwner,
                     observePositiveFlowRate(binding.statusEvView, attr.colorPrimary));
-            status.getPvProduction().observe(lifecycleOwner,
+            status.pvProduction().observe(lifecycleOwner,
                     observePositiveFlowRate(binding.statusPvView, attr.colorSecondary));
+            status.error().observe(lifecycleOwner, this::onError);
         }
     }
 
@@ -96,6 +102,21 @@ public class StatusFragment extends Fragment {
         super.onDestroy();
         status = null;
         binding = null;
+    }
+
+    private void onError(@Nullable Exception e) {
+        if (e == null) {
+            if (errorMsg != null) errorMsg.dismiss();
+            return;
+        }
+        View root = requireView();
+        String msg = getString(R.string.error_status, e.getMessage());
+        errorMsg = Snackbar.make(root, msg, Snackbar.LENGTH_SHORT)
+                .setBackgroundTint(MaterialColors.getColor(root, attr.colorError))
+                .setTextColor(MaterialColors.getColor(root, attr.colorOnError))
+                .setAnchorView(binding.anchorError);
+        errorMsg.show();
+        Log.w("Status", e);
     }
 
     private void onGridFeedInChange(double newVal) {

@@ -3,6 +3,7 @@ package io.github.j0b10.mad.myenergy.model.demo;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Random;
@@ -36,22 +37,22 @@ public class DemoStatusAdapter extends BaseProvider implements StatusProvider {
     }
 
     @Override
-    public MutableLiveData<Double> getGridFeedIn() {
+    public MutableLiveData<Double> gridFeedIn() {
         return gridFeedIn;
     }
 
     @Override
-    public MutableLiveData<Double> getHomeConsumption() {
+    public MutableLiveData<Double> homeConsumption() {
         return homeConsumption;
     }
 
     @Override
-    public MutableLiveData<Double> getEvConsumption() {
+    public MutableLiveData<Double> evConsumption() {
         return evConsumption;
     }
 
     @Override
-    public MutableLiveData<Double> getPvProduction() {
+    public MutableLiveData<Double> pvProduction() {
         return pvProduction;
     }
 }

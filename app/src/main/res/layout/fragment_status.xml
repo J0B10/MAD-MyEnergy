@@ -60,5 +60,12 @@
             app:flowImage="@drawable/status_pv"
             app:flowLabel="@string/lbl_status_pv"
             app:flowDirection="flow_in"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/anchor_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </ScrollView>

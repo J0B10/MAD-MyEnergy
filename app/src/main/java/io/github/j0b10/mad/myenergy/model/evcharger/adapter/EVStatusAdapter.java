@@ -2,8 +2,6 @@ package io.github.j0b10.mad.myenergy.model.evcharger.adapter;
 
 import static java.lang.Math.max;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -40,45 +38,41 @@ public class EVStatusAdapter extends BaseProvider implements StatusProvider {
 
 
     @Override
-    protected void update() {
-        try {
-            Response<List<Measurement>> response = api
-                    .getLiveData(new SearchQueryItem(ComponentId.PLANT, null))
-                    .execute();
-            Map<String, Measurement> measurements = Objects.requireNonNull(response.body()).stream()
-                    .collect(Collectors.toMap(m -> m.channelId, Function.identity()));
-            Measurement gridFeedIn = measurements.get(ChannelId.Measurement.GRID_W);
-            Measurement gridFeedOut = measurements.get(ChannelId.Measurement.GRID_W_CONSUMPTION);
-            Measurement evConsumption = measurements.get(ChannelId.Measurement.EV_W);
-            double gridIn = Optional.ofNullable(gridFeedIn).map(m -> m.values.get(0).value).orElse(0.0);
-            double gridOut = Optional.ofNullable(gridFeedOut).map(m -> m.values.get(0).value).orElse(0.0);
-            double ev = Optional.ofNullable(evConsumption).map(m -> m.values.get(0).value).orElse(0.0);
-            if (gridIn > gridOut) this.gridFeedIn.postValue(gridIn);
-            else this.gridFeedIn.postValue(-gridOut);
-            this.evConsumption.postValue(ev);
-            this.homeConsumption.postValue(max(0, gridOut - ev));
-        } catch (IOException e) {
-            Log.w("Status", e);
-        }
+    protected void update() throws IOException {
+        Response<List<Measurement>> response = api
+                .getLiveData(List.of(new SearchQueryItem(ComponentId.PLANT, null)))
+                .execute();
+        Map<String, Measurement> measurements = Objects.requireNonNull(response.body()).stream()
+                .collect(Collectors.toMap(m -> m.channelId, Function.identity()));
+        Measurement gridFeedIn = measurements.get(ChannelId.Measurement.GRID_W);
+        Measurement gridFeedOut = measurements.get(ChannelId.Measurement.GRID_W_CONSUMPTION);
+        Measurement evConsumption = measurements.get(ChannelId.Measurement.EV_W);
+        double gridIn = Optional.ofNullable(gridFeedIn).map(m -> m.values.get(0).value).orElse(0.0);
+        double gridOut = Optional.ofNullable(gridFeedOut).map(m -> m.values.get(0).value).orElse(0.0);
+        double ev = Optional.ofNullable(evConsumption).map(m -> m.values.get(0).value).orElse(0.0);
+        if (gridIn > gridOut) this.gridFeedIn.postValue(gridIn / 1000);
+        else this.gridFeedIn.postValue(-gridOut / 1000);
+        this.evConsumption.postValue(ev / 1000);
+        this.homeConsumption.postValue(max(0, gridOut - ev) / 1000);
     }
 
     @Override
-    public LiveData<Double> getGridFeedIn() {
+    public LiveData<Double> gridFeedIn() {
         return gridFeedIn;
     }
 
     @Override
-    public LiveData<Double> getHomeConsumption() {
+    public LiveData<Double> homeConsumption() {
         return homeConsumption;
     }
 
     @Override
-    public LiveData<Double> getEvConsumption() {
+    public LiveData<Double> evConsumption() {
         return evConsumption;
     }
 
     @Override
-    public LiveData<Double> getPvProduction() {
+    public LiveData<Double> pvProduction() {
         return pvProduction;
     }
 }

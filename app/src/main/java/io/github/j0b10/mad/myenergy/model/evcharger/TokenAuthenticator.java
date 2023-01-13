@@ -3,9 +3,11 @@ package io.github.j0b10.mad.myenergy.model.evcharger;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import okhttp3.Authenticator;
+import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
@@ -22,7 +24,7 @@ public class TokenAuthenticator implements Authenticator {
     @Override
     public Request authenticate(Route route, Response response) {
         final String token = sessionManager.getAuthToken();
-        if (!isRequestWithAccessToken(response) || token == null) {
+        if (token == null) {
             return null;
         }
         synchronized (this) {

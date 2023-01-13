@@ -39,4 +39,5 @@
     <string name="sd_desc">Show charging actions</string>
     <string name="lbl_battery_charge">Battery Charge</string>
     <string name="login_error">Login failed: %s</string>
+    <string name="error_status">Unable to fetch live data: %s</string>
 </resources>
