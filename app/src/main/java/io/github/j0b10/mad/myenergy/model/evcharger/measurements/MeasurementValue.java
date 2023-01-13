@@ -1,4 +1,4 @@
-package io.github.j0b10.mad.myenergy.model.evcharger.results;
+package io.github.j0b10.mad.myenergy.model.evcharger.measurements;
 
 import androidx.annotation.NonNull;
 

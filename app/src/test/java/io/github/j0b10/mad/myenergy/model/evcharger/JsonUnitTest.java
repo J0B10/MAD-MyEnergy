@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
-import io.github.j0b10.mad.myenergy.model.evcharger.results.Measurement;
+import io.github.j0b10.mad.myenergy.model.evcharger.measurements.Measurement;
 
 public class JsonUnitTest {
 

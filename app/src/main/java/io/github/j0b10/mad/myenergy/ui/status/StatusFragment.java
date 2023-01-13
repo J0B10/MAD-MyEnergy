@@ -4,6 +4,7 @@ package io.github.j0b10.mad.myenergy.ui.status;
 import static com.google.android.material.R.attr;
 import static com.google.android.material.color.MaterialColors.getColor;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,8 +19,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import io.github.j0b10.mad.myenergy.databinding.FragmentStatusBinding;
+import io.github.j0b10.mad.myenergy.model.demo.DemoStatusAdapter;
+import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
+import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVStatusAdapter;
+import io.github.j0b10.mad.myenergy.model.target.StatusProvider;
+import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 import io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView;
 import io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView.Direction;
 
@@ -27,13 +34,22 @@ public class StatusFragment extends Fragment {
 
     private FragmentStatusBinding binding;
 
-    private StatusViewModel model;
+    private StatusProvider status;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        model = new ViewModelProvider(this).get(StatusViewModel.class);
         binding = FragmentStatusBinding.inflate(inflater, container, false);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
+
+        SessionManager sessionManager = SessionManager.getInstance(requireContext());
+        if (demoMode) {
+            status = new DemoStatusAdapter();
+        } else {
+            status = new EVStatusAdapter(sessionManager.getAPI());
+        }
 
         return binding.getRoot();
     }
@@ -44,24 +60,31 @@ public class StatusFragment extends Fragment {
 
         LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
-        model.gridFeedIn.observe(lifecycleOwner, this::onGridFeedInChange);
-        model.homeConsumption.observe(lifecycleOwner,
+        status.getGridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
+        status.getHomeConsumption().observe(lifecycleOwner,
                 observePositiveFlowRate(binding.statusHomeView, attr.colorError));
-        model.evConsumption.observe(lifecycleOwner,
+        status.getEvConsumption().observe(lifecycleOwner,
                 observePositiveFlowRate(binding.statusEvView, attr.colorPrimary));
-        model.pvProduction.observe(lifecycleOwner,
+        status.getPvProduction().observe(lifecycleOwner,
                 observePositiveFlowRate(binding.statusPvView, attr.colorSecondary));
+    }
 
-        //Test values
-        model.pvProduction.postValue(4.43);
-        model.evConsumption.postValue(10.5);
-        model.homeConsumption.postValue(0.680);
-        model.gridFeedIn.postValue(4.43 - 10.5 - 0.680);
+    @Override
+    public void onResume() {
+        super.onResume();
+        status.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        status.stop();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        status = null;
         binding = null;
     }
 
