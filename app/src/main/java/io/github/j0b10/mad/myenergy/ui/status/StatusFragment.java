@@ -12,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.color.MaterialColors;
@@ -33,7 +31,6 @@ import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
 import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVStatusAdapter;
 import io.github.j0b10.mad.myenergy.model.target.StatusProvider;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
-import io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView;
 import io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView.Direction;
 
 public class StatusFragment extends Fragment {
@@ -53,15 +50,17 @@ public class StatusFragment extends Fragment {
         String fetchRateS = preferences.getString(PreferencesFragment.KEY_FETCH_RATE, "5.0");
         Duration fetchInterval = Duration.ofMillis((long) (Float.parseFloat(fetchRateS) * 1000L));
 
-        SessionManager sessionManager = SessionManager.getInstance(requireContext());
         if (demoMode) {
             status = new DemoStatusAdapter();
             status.configureInterval(fetchInterval);
-        } else if (sessionManager.isLoggedIn()) {
-            status = new EVStatusAdapter(sessionManager.getAPI());
-            status.configureInterval(fetchInterval);
         } else {
-            status = null;
+            SessionManager sessionManager = SessionManager.getInstance(requireContext());
+            if (sessionManager.isLoggedIn()) {
+                status = new EVStatusAdapter(sessionManager.getAPI());
+                status.configureInterval(fetchInterval);
+            } else {
+                status = null;
+            }
         }
 
         return binding.getRoot();
@@ -76,11 +75,11 @@ public class StatusFragment extends Fragment {
         if (status != null) {
             status.gridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
             status.homeConsumption().observe(lifecycleOwner,
-                    observePositiveFlowRate(binding.statusHomeView, attr.colorError));
+                    binding.statusHomeView.observePositiveFlowRate(attr.colorError));
             status.evConsumption().observe(lifecycleOwner,
-                    observePositiveFlowRate(binding.statusEvView, attr.colorPrimary));
+                    binding.statusEvView.observePositiveFlowRate(attr.colorPrimary));
             status.pvProduction().observe(lifecycleOwner,
-                    observePositiveFlowRate(binding.statusPvView, attr.colorSecondary));
+                    binding.statusPvView.observePositiveFlowRate(attr.colorSecondary));
             status.error().observe(lifecycleOwner, this::onError);
         }
     }
@@ -131,14 +130,5 @@ public class StatusFragment extends Fragment {
             binding.statusGridView.setFlowDirection(Direction.IN);
             binding.statusGridView.setFlowColor(newVal > 0 ? colorPositive : colorNone);
         }
-    }
-
-    private Observer<Double> observePositiveFlowRate(EnergyFlowView view, @AttrRes int color) {
-        return val -> {
-            @ColorInt int colorPositive = getColor(view.getContext(), color, Color.GRAY);
-            @ColorInt int colorNone = getColor(view.getContext(), attr.colorOutline, Color.GRAY);
-            view.setFlowAmount(val);
-            view.setFlowColor(val > 0 ? colorPositive : colorNone);
-        };
     }
 }

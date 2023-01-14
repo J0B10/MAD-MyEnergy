@@ -3,12 +3,15 @@ package io.github.j0b10.mad.myenergy.ui.charging.plan;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class ChargePlanViewModel extends ViewModel {
 
     final MutableLiveData<LocalDateTime> startTime;
     final MutableLiveData<LocalDateTime> planTime;
+
+    final MutableLiveData<Duration> duration;
     final MutableLiveData<Integer> planCharge;
     final MutableLiveData<Integer> stateCharge;
     final MutableLiveData<Integer> total;
@@ -19,5 +22,6 @@ public class ChargePlanViewModel extends ViewModel {
         total = new MutableLiveData<>(0);
         startTime = new MutableLiveData<>();
         planTime = new MutableLiveData<>();
+        duration = new MutableLiveData<>();
     }
 }

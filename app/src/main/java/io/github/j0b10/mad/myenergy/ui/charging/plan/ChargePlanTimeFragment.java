@@ -101,6 +101,7 @@ public class ChargePlanTimeFragment extends Fragment implements TimeRangePicker.
         LocalDateTime startTime = Objects.requireNonNull(model.startTime.getValue());
         LocalDateTime endTime = round5Min(startTime.plus(timeDuration.getDuration()));
         model.planTime.setValue(endTime);
+        model.duration.setValue(timeDuration.getDuration());
         if (timeDuration.getDurationMinutes() >= 720) {
             @ColorInt int color = MaterialColors.getColor(requireContext(),
                     attr.colorTertiaryContainer, Color.GRAY);

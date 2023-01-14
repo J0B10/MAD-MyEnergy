@@ -1,5 +1,7 @@
 package io.github.j0b10.mad.myenergy.ui.views;
 
+import static com.google.android.material.color.MaterialColors.getColor;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -10,8 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 
+import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.Observer;
 
 import com.google.android.material.card.MaterialCardView;
 
@@ -123,6 +127,17 @@ public class EnergyFlowView extends MaterialCardView {
         this.flowColor = flowColor;
         binding.flowIcon.setImageTintList(ColorStateList.valueOf(flowColor));
         binding.flowText.setTextColor(flowColor);
+    }
+
+
+
+    public Observer<Double> observePositiveFlowRate(@AttrRes int color) {
+        return val -> {
+            @ColorInt int colorPositive = getColor(getContext(), color, Color.GRAY);
+            @ColorInt int colorNone = getColor(getContext(), com.google.android.material.R.attr.colorOutline, Color.GRAY);
+            setFlowAmount(val);
+            setFlowColor(val > 0 ? colorPositive : colorNone);
+        };
     }
 
     public enum Direction {

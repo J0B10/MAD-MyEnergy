@@ -40,4 +40,6 @@
     <string name="lbl_battery_charge">Battery Charge</string>
     <string name="login_error">Login failed: %s</string>
     <string name="error_status">Unable to fetch live data: %s</string>
+    <string name="error_charge_info">Communication error with charger: %s</string>
+    <string name="error_charge_plan">Unable to plan charge: %s</string>
 </resources>

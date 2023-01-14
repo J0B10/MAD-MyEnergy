@@ -39,4 +39,6 @@
     <string name="lbl_battery_charge">Battery Charge</string>
     <string name="login_error">Login fehlgeschlagen: %s</string>
     <string name="error_status">Laden von Live-Daten fehgeschlagen: %s</string>
+    <string name="error_charge_info">Kommunikationsfehler mit EV-Charger: %s</string>
+    <string name="error_charge_plan">Ladeplanung fehlgeschlagen: %s</string>
 </resources>
