@@ -1,0 +1,42 @@
+POST /api/v1/measurements/search/ HTTP/1.1
+Host: 192.168.0.32
+Cookie: ********
+Content-Length: 453
+Sec-Ch-Ua: "Not?A_Brand";v="8", "Chromium";v="108"
+Accept: application/json, text/plain, */*
+Content-Type: application/json
+Sec-Ch-Ua-Mobile: ?0
+Authorization: ********
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.95 Safari/537.36
+Sec-Ch-Ua-Platform: "Windows"
+Origin: https://192.168.0.32
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://192.168.0.32/webui/Plant:1/dashboard
+Accept-Encoding: gzip, deflate
+Accept-Language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+Connection: close
+
+{
+    "queryItems": [
+        {
+            "componentId": "Plant:1",
+            "channelId": "Measurement.Metering.GridMs.TotWIn.ChaSta",
+            "resolution": "FifteenMinutes",
+            "timezone": "Europe/Berlin",
+            "aggregate": "Avg",
+            "multiAggregate": "Sum"
+        },
+        {
+            "componentId": "Plant:1",
+            "channelId": "Measurement.Metering.GridMs.TotWhIn.ChaSta",
+            "resolution": "OneDay",
+            "timezone": "Europe/Berlin",
+            "aggregate": "Dif",
+            "multiAggregate": "Sum"
+        }
+    ],
+    "dateTimeBegin": "2022-12-07T23:00:00.000Z",
+    "dateTimeEnd": "2022-12-08T23:00:00.000Z"
+}

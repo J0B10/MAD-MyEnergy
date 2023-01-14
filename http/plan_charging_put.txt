@@ -1,0 +1,40 @@
+PUT /api/v1/parameters/IGULD:SELF HTTP/1.1
+Host: 192.168.0.32
+Cookie: ********
+Content-Length: 290
+Sec-Ch-Ua: "Chromium";v="107",
+"Not=A?Brand";v="24"
+Accept: application/json, text/plain, */*
+Content-Type: application/json
+Sec-Ch-Ua-Mobile: ?0
+Authorization: ********
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.5304.107 Safari/537.36
+Sec-Ch-Ua-Platform: "Windows"
+Origin: https://192.168.0.32
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://192.168.0.32/webui/Plant:1,IGULD:SELF/configuration/view-parameters
+Accept-Encoding: gzip, deflate
+Accept-Language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+Connection: close
+
+{
+    "values": [
+        {
+            "channelId": "Parameter.Chrg.ActChaMod",
+            "timestamp": "2022-12-07T13:27:02.000Z",
+            "value": "4720"
+        },
+        {
+            "channelId": "Parameter.Chrg.Plan.DurTmm",
+            "timestamp": "2022-12-07T13:27:02.000Z",
+            "value": 150
+        },
+        {
+            "channelId": "Parameter.Chrg.Plan.En",
+            "timestamp": "2022-12-07T13:27:02.000Z",
+            "value": 10
+        }
+    ]
+}

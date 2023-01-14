@@ -1,0 +1,250 @@
+HTTP/1.1 200 OK
+Connection: close
+Date: Wed,
+07 Dec 2022 13: 24: 35 GMT
+Access-Control-Allow-Origin: https: //192.168.0.32
+Access-Control-Allow-Credentials: true
+Cache-Control: no-cache,no-store,must-revalidate
+Content-Type: application/json
+
+[
+    {
+        "channelId": "Measurement.Metering.GridMs.TotWIn.ChaSta",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:33.844Z",
+                "value": 0
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.GridMs.TotWhIn.ChaSta",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:33.793Z",
+                "value": 3993417
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntA.phsA",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": -7.2490000000000006
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntA.phsB",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": -10.21
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntA.phsC",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": 0.499
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntCsmpW",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 3936.6000000000004
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntCsmpWh",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 5656856
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntHz",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": 49.987
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntPF",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": 1
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntPhV.phsA",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": 231.282
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntPhV.phsB",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": 231.235
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntPhV.phsC",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.783Z",
+                "value": 235.294
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntVAr",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 37.9
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntVAr.phsA",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 9.200000000000001
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntVAr.phsB",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 36
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntVAr.phsC",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": -7.300000000000001
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntW",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 0
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntW.phsA",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": -1675.4
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntW.phsB",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": -2359
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntW.phsC",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 97.80000000000001
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Metering.PCCMs.PlntWh",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-12-07T13:24:34.782Z",
+                "value": 1.0692489E7
+            }
+        ]
+    },
+    {
+        "channelId": "Measurement.Operation.Health",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-11-24T10:05:03.874Z",
+                "value": 307
+            }
+        ]
+    },
+    {
+        "channelId": "Setpoint.ExternalPlantControl.Inverter.VArModCfg.VArCtlVolCfg.VolRef.VolRefPu",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-04-29T14:09:43.733Z"
+            }
+        ]
+    },
+    {
+        "channelId": "Setpoint.PlantControl.Inverter.FstStop",
+        "componentId": "Plant:1",
+        "values": [
+            {
+                "time": "2022-04-29T14:09:57.661Z",
+                "value": 1467
+            }
+        ]
+    }
+]
