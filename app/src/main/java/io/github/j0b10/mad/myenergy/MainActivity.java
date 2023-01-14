@@ -1,8 +1,13 @@
 package io.github.j0b10.mad.myenergy;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -23,6 +28,7 @@ import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private NavController nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +49,16 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         if (fragment instanceof NavHostFragment navFragment) {
-            NavController navController = navFragment.getNavController();
-            navController.setGraph(R.navigation.mobile_navigation);
-            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-            NavigationUI.setupWithNavController(binding.navView, navController);
+            nav = navFragment.getNavController();
+            nav.setGraph(R.navigation.mobile_navigation);
+            NavigationUI.setupActionBarWithNavController(this, nav, appBarConfiguration);
+            NavigationUI.setupWithNavController(binding.navView, nav);
         } else {
             throw new IllegalStateException("no nav host fragment: " + fragment);
+        }
+
+        if (inLandscapeMode()) {
+            binding.navView.setVisibility(View.GONE);
         }
     }
 
@@ -56,6 +66,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean res = super.onCreateOptionsMenu(menu);
+        if (!inLandscapeMode()) return res;
+        getMenuInflater().inflate(R.menu.bottom_nav_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        nav.navigate(item.getItemId());
+        return true;
+    }
+
+    private boolean inLandscapeMode() {
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
 }

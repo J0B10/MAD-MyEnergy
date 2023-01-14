@@ -5,6 +5,8 @@ import static io.github.j0b10.mad.myenergy.model.target.ChargerState.*;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.time.LocalDateTime;
+
 import io.github.j0b10.mad.myenergy.model.evcharger.EVChargerAPI;
 import io.github.j0b10.mad.myenergy.model.target.BaseProvider;
 import io.github.j0b10.mad.myenergy.model.target.ChargeInfoProvider;
@@ -22,6 +24,7 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
             evConsumption = new MutableLiveData<>(0.0),
             charge = new MutableLiveData<>(0.0),
             goal = new MutableLiveData<>(null);
+    private final MutableLiveData<LocalDateTime> planEndTime = new MutableLiveData<>();
 
 
     public EVChargeInfoAdapter(EVChargerAPI api) {
@@ -52,5 +55,10 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
     @Override
     public LiveData<Double> goal() {
         return goal;
+    }
+
+    @Override
+    public LiveData<LocalDateTime> planEndTime() {
+        return planEndTime;
     }
 }
