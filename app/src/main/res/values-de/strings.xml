@@ -32,8 +32,8 @@
     <string name="error_no_user">Bitte gib deinen Benutzernamen an!</string>
     <string name="error_no_passwd">Bitte gib dein Password ein!</string>
     <string name="sd_lbl_stop">Laden stoppen</string>
-    <string name="sd_lbl_plan">Ladeplanung</string>
-    <string name="sd_lbl_excess">Überschussladen</string>
+    <string name="mode_plan">Intelligentes Laden</string>
+    <string name="mode_excess">Überschussladen</string>
     <string name="sd_lbl_speed">Schnellladen starten</string>
     <string name="sd_desc">Ladeoptionen anzeigen</string>
     <string name="lbl_battery_charge">Battery Charge</string>
@@ -41,4 +41,12 @@
     <string name="error_status">Laden von Live-Daten fehgeschlagen: %s</string>
     <string name="error_charge_info">Kommunikationsfehler mit EV-Charger: %s</string>
     <string name="error_charge_plan">Ladeplanung fehlgeschlagen: %s</string>
+    <string name="mode_fast">Schnellladen</string>
+    <string name="mode_disconnect">Kein Fahrzeug</string>
+    <string name="mode_stop">Ladestopp</string>
+    <string name="desc_stop">Ladevorgang wurde von Nutzer, Fahrzeug oder Ladestation unterbrochen.</string>
+    <string name="desc_fast">Das verbundene Fahrzeug wird mit der maximal verfügbaren Leistung geladen.</string>
+    <string name="desc_plan">Lädt das Fahrzeug bis zum End-Zeitpunkt um die gewünschte Menge und maximiert PV-Nutzung.</string>
+    <string name="desc_excess">Verwendet überschüssige PV-Energie um das Fahrzeug zu laden.</string>
+    <string name="desc_disconnect">Verbinden Sie ihr Fahrzeug mit der Ladestation und wählen Sie einen Lademodus aus.</string>
 </resources>

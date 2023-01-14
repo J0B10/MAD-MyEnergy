@@ -33,8 +33,8 @@
     <string name="error_no_user">Please enter your username!</string>
     <string name="error_no_passwd">Please enter your password!</string>
     <string name="sd_lbl_stop">Stop charging</string>
-    <string name="sd_lbl_plan">Plan charging</string>
-    <string name="sd_lbl_excess">Excess charging</string>
+    <string name="mode_plan">Smart Charging</string>
+    <string name="mode_excess">Excess Charging</string>
     <string name="sd_lbl_speed">Start fast charging</string>
     <string name="sd_desc">Show charging actions</string>
     <string name="lbl_battery_charge">Battery Charge</string>
@@ -42,4 +42,12 @@
     <string name="error_status">Unable to fetch live data: %s</string>
     <string name="error_charge_info">Communication error with charger: %s</string>
     <string name="error_charge_plan">Unable to plan charge: %s</string>
+    <string name="mode_fast">Fast Charging</string>
+    <string name="mode_disconnect">No EV connected</string>
+    <string name="mode_stop">Charging paused</string>
+    <string name="desc_stop">Charging was interrupted by user, ev or charger.</string>
+    <string name="desc_fast">The connected ev is charged at the maximum available power.</string>
+    <string name="desc_plan">Charge the ev by the desired amount until the target time, maximizing pv usage.</string>
+    <string name="desc_excess">Use only excess pv power to charge the connected ev.</string>
+    <string name="desc_disconnect">Connect your ev to the charger and select a mode to start charging.</string>
 </resources>

@@ -33,7 +33,6 @@ import io.github.j0b10.mad.myenergy.model.demo.DemoChargingAdapter;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
 import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter;
 import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeInfoAdapter;
-import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVStatusAdapter;
 import io.github.j0b10.mad.myenergy.model.target.ChargeControls;
 import io.github.j0b10.mad.myenergy.model.target.ChargeInfoProvider;
 import io.github.j0b10.mad.myenergy.model.target.ChargerState;
@@ -86,7 +85,6 @@ public class ChargingFragment extends Fragment {
         setupSpeedDial();
         binding.fabStartFast.setOnClickListener(this::onFabClicked);
         binding.fabStopFast.setOnClickListener(this::onFabClicked);
-        binding.chargemodeView.setUserInputEnabled(false);
 
         LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
@@ -142,6 +140,7 @@ public class ChargingFragment extends Fragment {
         binding.chargeInfo.setText(text);
     }
 
+    @SuppressWarnings("SwitchStatementWithTooFewBranches")
     private void onChargerStateChange(ChargerState chargerState) {
         if (chargerState.isCharging()) {
             if (batteryAnimation.isStarted()) batteryAnimation.resume();
@@ -152,6 +151,25 @@ public class ChargingFragment extends Fragment {
                 binding.chargeBattery.setChargeSecondary(0.0f);
             }
         }
+
+        binding.chargeMode.setText(switch (chargerState) {
+            case FAST_CHARGING -> R.string.mode_fast;
+            case SMART_CHARGING -> R.string.mode_plan;
+            case EXCESS_CHARGING -> R.string.mode_excess;
+            case UNCONNECTED -> R.string.mode_disconnect;
+            default -> R.string.mode_stop;
+        });
+        binding.description.setText(switch (chargerState) {
+            case FAST_CHARGING -> R.string.desc_fast;
+            case SMART_CHARGING -> R.string.desc_plan;
+            case EXCESS_CHARGING -> R.string.desc_excess;
+            case UNCONNECTED -> R.string.desc_disconnect;
+            default -> R.string.desc_stop;
+        });
+        binding.extraInfo.setText(switch (chargerState) {
+            case SMART_CHARGING -> getString(R.string.cp_title_until) + " hh:mm";
+            default -> "";
+        });
 
         binding.fabStartFast.setVisibility(
                 showIf(chargerState == ChargerState.FAST_CHARGING_STOPPED));
@@ -180,14 +198,14 @@ public class ChargingFragment extends Fragment {
     private void setupSpeedDial() {
         binding.speedDial.addActionItem(
                 new SpeedDialActionItem.Builder(R.id.sd_plan_charging, R.drawable.sd_plan)
-                        .setLabel(R.string.sd_lbl_plan)
+                        .setLabel(R.string.mode_plan)
                         .setFabBackgroundColor(getColor(binding.speedDial, attr.colorPrimaryContainer))
                         .setFabImageTintColor(getColor(binding.speedDial, attr.colorOnPrimaryContainer))
                         .create()
                 , 0);
         binding.speedDial.addActionItem(
                 new SpeedDialActionItem.Builder(R.id.sd_excess_charging, R.drawable.sd_solar)
-                        .setLabel(R.string.sd_lbl_excess)
+                        .setLabel(R.string.mode_excess)
                         .setFabBackgroundColor(getColor(binding.speedDial, attr.colorTertiaryContainer))
                         .setFabImageTintColor(getColor(binding.speedDial, attr.colorOnTertiaryContainer))
                         .create()

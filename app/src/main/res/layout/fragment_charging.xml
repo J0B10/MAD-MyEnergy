@@ -10,13 +10,67 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:scrollbarStyle="insideOverlay" >
+        android:scrollbarStyle="insideOverlay">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Elevated"
+                android:layout_width="match_parent"
+                android:layout_height="128dp"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="24dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/charge_mode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Intelligentes Laden" />
+
+                    <TextView
+                        android:id="@+id/extra_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        app:layout_constraintEnd_toEndOf="@+id/charge_mode"
+                        app:layout_constraintStart_toStartOf="@+id/charge_mode"
+                        app:layout_constraintTop_toBottomOf="@+id/charge_mode"
+                        tools:text="bis 16:00" />
+
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:autoSizeTextType="uniform"
+                        android:gravity="bottom|start"
+                        android:maxLines="2"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/extra_info"
+                        app:layout_constraintVertical_bias="1.0"
+                        tools:text="Lädt das Fahrzeug bis zum End-Zeitpunkt um die gewünschte Menge und maximiert PV-Nutzung." />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView
                 android:id="@+id/energyFlowView"
@@ -102,11 +156,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/chargemode_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
         </LinearLayout>
 
     </ScrollView>
@@ -122,39 +171,39 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:tooltipText="@string/sd_desc"
-        app:sdOverlayLayout="@id/overlay"
         app:sdMainFabAnimationRotateAngle="45"
         app:sdMainFabClosedBackgroundColor="?attr/colorSecondaryContainer"
+        app:sdMainFabClosedIconColor="?attr/colorOnSecondaryContainer"
+        app:sdMainFabClosedSrc="@drawable/sd_charge"
         app:sdMainFabOpenedBackgroundColor="?attr/colorSecondaryContainer"
         app:sdMainFabOpenedIconColor="?attr/colorOnSecondaryContainer"
-        app:sdMainFabClosedIconColor="?attr/colorOnSecondaryContainer"
-        app:sdMainFabClosedSrc="@drawable/sd_charge"/>
+        app:sdOverlayLayout="@id/overlay" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="@style/Widget.Material3.FloatingActionButton.Primary"
         android:id="@+id/fab_stop_fast"
-        android:visibility="gone"
-        android:layout_margin="16dp"
+        style="@style/Widget.Material3.FloatingActionButton.Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:contentDescription="@string/sd_lbl_stop"
-        android:tooltipText="@string/sd_lbl_stop"
-        android:src="@drawable/sd_stop"
+        android:layout_margin="16dp"
         android:backgroundTint="?attr/colorErrorContainer"
-        android:tint="?attr/colorOnErrorContainer" />
+        android:contentDescription="@string/sd_lbl_stop"
+        android:src="@drawable/sd_stop"
+        android:tint="?attr/colorOnErrorContainer"
+        android:tooltipText="@string/sd_lbl_stop"
+        android:visibility="gone" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="@style/Widget.Material3.FloatingActionButton.Primary"
         android:id="@+id/fab_start_fast"
-        android:visibility="gone"
-        android:layout_margin="16dp"
+        style="@style/Widget.Material3.FloatingActionButton.Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
         android:contentDescription="@string/sd_lbl_speed"
+        android:src="@drawable/sd_charge"
         android:tooltipText="@string/sd_lbl_speed"
-        android:src="@drawable/sd_charge" />
+        android:visibility="gone" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/cp_progress"
