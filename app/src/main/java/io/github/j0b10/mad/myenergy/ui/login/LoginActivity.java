@@ -1,5 +1,6 @@
 package io.github.j0b10.mad.myenergy.ui.login;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,6 +20,9 @@ import com.google.android.material.R.attr;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.time.Instant;
+
+import io.github.j0b10.mad.myenergy.MainActivity;
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.ActivityLoginBinding;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
@@ -48,7 +52,18 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         sessionManager = SessionManager.getInstance(this);
+
         AccountPreferences accountPreferences = sessionManager.getAccountPreferences();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
+        if (!demoMode) {
+            boolean loggedIn = SessionManager.getInstance(this).requireLoginSync(this);
+            if (loggedIn) {
+                onLogin();
+                return;
+            }
+        }
 
         binding.loginBtn.setOnClickListener(this::onLoginClicked);
         ipv4Filter = new IPv4AddressFilter();
@@ -59,6 +74,9 @@ public class LoginActivity extends AppCompatActivity {
             binding.loginIpInput.setText(accountPreferences.getIpAddress());
             binding.loginUsrInput.setText(accountPreferences.getUsername());
         }
+        if (accountPreferences.isPasswordStored()) {
+            binding.loginPasswdInput.setText(accountPreferences.getPassword());
+        }
     }
 
     @Override
@@ -67,15 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         binding = null;
         ipv4Filter = null;
         sessionManager = null;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (backAllowed) {
-            super.onBackPressed();
-        } else {
-            finishAffinity();
-        }
     }
 
     @Override
@@ -130,17 +139,16 @@ public class LoginActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.login_debug_sel) {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
             pref.edit().putBoolean(PreferencesFragment.KEY_DEMO, true).apply();
-            setResult(RESULT_OK);
-            finish();
+            onLogin();
             return true;
         }
         return false;
     }
 
     private void onLogin() {
-        binding.loginProgress.setVisibility(View.GONE);
+        Intent startMain = new Intent(this, MainActivity.class);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(startMain);
         Log.i("login", "Logged in!");
-        setResult(RESULT_OK);
-        finish();
     }
 }

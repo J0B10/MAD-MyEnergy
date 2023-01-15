@@ -34,13 +34,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
-
-        if (!demoMode) {
-            SessionManager.getInstance(this).requireLoginSync(this);
-        }
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

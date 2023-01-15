@@ -83,8 +83,8 @@ public class SessionManager {
         api = retrofit.newBuilder().client(okHttpAuthenticated).build().create(EVChargerAPI.class);
     }
 
-    public void requireLoginSync(Activity context) {
-        if (isLoggedIn()) return;
+    public boolean requireLoginSync(Activity context) {
+        if (isLoggedIn()) return true;
         if (accountPreferences.isLoginStored()) {
             createEndpoints(accountPreferences.getIpAddress());
 
@@ -100,9 +100,9 @@ public class SessionManager {
             } finally {
                 StrictMode.setThreadPolicy(threadPolicy);
             }
-            if (success) return;
+            return success;
         }
-        context.startActivity(new Intent(context, LoginActivity.class));
+        return false;
     }
 
     private boolean loginSync(AuthenticationGrantType grantType) {
