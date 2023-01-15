@@ -150,6 +150,12 @@ public class SessionManager {
                 }, onError));
     }
 
+    public synchronized void logout() {
+        authToken = null;
+        api = null;
+        auth = null;
+    }
+
     public synchronized boolean isLoggedIn() {
         return authToken != null;
     }

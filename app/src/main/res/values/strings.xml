@@ -59,8 +59,8 @@
     <string name="pref_fetch_rate">Fetch rate</string>
     <string name="sum_demo">Display random data.\nAllows showcasing the app without connecting an EV Charger.</string>
     <string name="pref_demo">Demo Mode</string>
-    <string name="sum_login">Open Login dialog to modify the IP address of the connected EV Charger, your username or the password.</string>
-    <string name="pref_login" translatable="false">Login</string>
+    <string name="sum_logout">Logout from current session and reconnect to an ev charger.</string>
+    <string name="pref_logout" translatable="false">Logout</string>
     <string name="category_car">Car Settings</string>
     <string name="pref_car_battery">Battery Capacity</string>
     <string name="sum_car_battery">The usable capacity of the cars battery in kWh.</string>

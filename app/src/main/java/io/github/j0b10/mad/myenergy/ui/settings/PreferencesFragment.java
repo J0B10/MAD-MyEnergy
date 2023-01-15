@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.takisoft.preferencex.PreferenceFragmentCompat;
 
 import io.github.j0b10.mad.myenergy.R;
+import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
+import io.github.j0b10.mad.myenergy.model.evcharger.authentication.AccountPreferences;
 import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
@@ -25,9 +27,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onCreatePreferencesFix(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
+        boolean loggedIn = SessionManager.getInstance(requireContext()).isLoggedIn();
+        findPreference(KEY_DEMO).setEnabled(loggedIn);
+
         findPreference(KEY_LOGIN).setOnPreferenceClickListener(preference -> {
+            SessionManager sessionManager = SessionManager.getInstance(requireContext());
+            sessionManager.getAccountPreferences().removeAccount();
+            sessionManager.logout();
             startActivity(new Intent(requireContext(), LoginActivity.class)
-                    .putExtra(LoginActivity.PARAM_BACK_ALLOWED, true));
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             return true;
         });
 

@@ -58,7 +58,7 @@
     <string name="pref_fetch_rate">Aktualisierungsrate</string>
     <string name="sum_demo">Zeige nur Zufällige Daten. Erlaubt die App zu testen, ohne eine Ladestation zu verbinden.</string>
     <string name="pref_demo">Demo Modus</string>
-    <string name="sum_login">Öffne die Login Seite um die IP-Adresse der Ladestation, deinen Benutzer oder dein Passwort zu ändern.</string>
+    <string name="sum_logout">Aktuelle Session trennen und Login Seite zeigen um sich mit einer Ladestation zu verbinden.</string>
     <string name="category_car">Fahrzeugeinstellungen</string>
     <string name="pref_car_battery">Batterie Kapazität</string>
     <string name="sum_car_battery">Die verwendbare Kapazität des Fahrzeugs in kWh</string>

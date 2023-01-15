@@ -20,8 +20,8 @@
         app:title="@string/category_connect">
         <Preference
             app:key="login"
-            app:summary="@string/sum_login"
-            app:title="@string/pref_login" />
+            app:summary="@string/sum_logout"
+            app:title="@string/pref_logout" />
         <SwitchPreference
             app:defaultValue="false"
             app:key="demo"
