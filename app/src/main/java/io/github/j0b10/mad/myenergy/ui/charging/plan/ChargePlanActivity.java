@@ -36,7 +36,7 @@ import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 public class ChargePlanActivity extends AppCompatActivity {
 
-    static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     private static final List<Integer> TAB_LABEL_RES_IDS = List.of(
             R.string.cp_title_time, R.string.cp_title_plan

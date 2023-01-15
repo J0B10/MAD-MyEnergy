@@ -11,17 +11,22 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import io.github.j0b10.mad.myenergy.model.evcharger.authentication.AccountPreferences;
 import io.github.j0b10.mad.myenergy.model.evcharger.authentication.AuthenticationGrantType;
 import io.github.j0b10.mad.myenergy.model.evcharger.authentication.Token;
+import io.github.j0b10.mad.myenergy.model.evcharger.gson.GsonInstantAdapter;
 import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -32,13 +37,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SessionManager {
 
     private static final String ACCOUNT_PREFERENCE_NAME = "myenergy.account";
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(Instant.class, (JsonDeserializer<Instant>) (json, typeOfT, context) -> {
-        try {
-            return Instant.parse(json.getAsString());
-        } catch (UnsupportedOperationException | DateTimeParseException e) {
-            throw new JsonParseException(e);
-        }
-    }).create();
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(Instant.class, new GsonInstantAdapter())
+            .create();
 
     private static SessionManager instance;
 

@@ -17,6 +17,10 @@ public class SearchQuery {
         this.queryItems = queryItems;
     }
 
+    public SearchQuery(List<SearchQueryItem> queryItems) {
+        this(queryItems, null, null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

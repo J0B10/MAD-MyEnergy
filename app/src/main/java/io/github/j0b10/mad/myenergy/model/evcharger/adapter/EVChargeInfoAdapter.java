@@ -1,16 +1,39 @@
 package io.github.j0b10.mad.myenergy.model.evcharger.adapter;
 
-import static io.github.j0b10.mad.myenergy.model.target.ChargerState.*;
+import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter.CHARGE_MODE_EXCESS;
+import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter.CHARGE_MODE_SMART;
+import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter.CHARGE_MODE_STOP;
+import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVStatusAdapter.toMap;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING_STOPPED;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.SMART_CHARGING;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.UNCONNECTED;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import io.github.j0b10.mad.myenergy.model.evcharger.EVChargerAPI;
+import io.github.j0b10.mad.myenergy.model.evcharger.dataQueries.SearchQuery;
+import io.github.j0b10.mad.myenergy.model.evcharger.dataQueries.SearchQueryItem;
+import io.github.j0b10.mad.myenergy.model.evcharger.measurements.Measurement;
+import io.github.j0b10.mad.myenergy.model.evcharger.parameters.DeviceParameters;
+import io.github.j0b10.mad.myenergy.model.evcharger.parameters.Parameter;
+import io.github.j0b10.mad.myenergy.model.evcharger.values.ChannelId;
+import io.github.j0b10.mad.myenergy.model.evcharger.values.ComponentId;
 import io.github.j0b10.mad.myenergy.model.target.BaseProvider;
 import io.github.j0b10.mad.myenergy.model.target.ChargeInfoProvider;
 import io.github.j0b10.mad.myenergy.model.target.ChargerState;
+import retrofit2.Response;
 
 public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvider {
 
@@ -19,7 +42,9 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
     private final MutableLiveData<Boolean>
             isCharging = new MutableLiveData<>(false);
     private final MutableLiveData<ChargerState>
-            chargerState = new MutableLiveData<>(UNCONNECTED);
+            chargerState = new MutableLiveData<>(EXCESS_CHARGING);
+
+    private volatile boolean a;
     private final MutableLiveData<Double>
             evConsumption = new MutableLiveData<>(0.0),
             charge = new MutableLiveData<>(0.0),
@@ -31,10 +56,50 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
         this.api = api;
     }
 
-
     @Override
-    protected void update() throws Exception {
+    protected void update() {
+            api.getLiveData(List.of(new SearchQueryItem(ComponentId.SELF, null)))
+                    .enqueue(new PostErrorsCallback<>(error, this::onFetchMeasurements));
+            api.getParameters(new SearchQuery(List.of(new SearchQueryItem(ComponentId.SELF, null))))
+                   .enqueue(new PostErrorsCallback<>(error, this::onFetchParameters));
+    }
+    private void onFetchMeasurements(List<Measurement> measurementList) {
+        Map<String, Measurement> measurements = toMap(measurementList, m -> m.channelId);
+        Measurement chargeWH = measurements.get(ChannelId.Measurement.EV_CHARGE_WH);
+        Measurement evConsW = measurements.get(ChannelId.Measurement.EV_W);
+        double charge = Optional.ofNullable(chargeWH)
+                .map(m -> m.values.get(0).value / 1000).orElse(0.0);
+        double evConsumption = Optional.ofNullable(evConsW)
+                .map(m -> m.values.get(0).value / 1000).orElse(0.0);
+        this.charge.postValue(charge);
+        this.evConsumption.postValue(evConsumption);
+    }
 
+    private void onFetchParameters(List<DeviceParameters> deviceParameterList) {
+        Map<String, Parameter> parameters = toMap(deviceParameterList.get(0).values, p -> p.channelId);
+        Parameter goalW = parameters.get(ChannelId.Parameter.CHARGE_ENERGY);
+        Parameter state = parameters.get(ChannelId.Parameter.CHARGE_MODE);
+        Parameter planEnd = parameters.get(ChannelId.Parameter.EV_CHARGE_END_TM);
+        double goal = Optional.ofNullable(goalW)
+                .map(p -> p.value).map(Double::parseDouble).orElse(0.0);
+        LocalDateTime time = Optional.ofNullable(planEnd)
+                .map(p -> p.value).map(Long::parseLong).map(Instant::ofEpochSecond)
+                .map(t -> LocalDateTime.ofInstant(t, ZoneId.systemDefault()))
+                .orElse(null);
+        ChargerState chState = Optional.ofNullable(state).map(s ->
+                switch (s.value) {
+                    case CHARGE_MODE_EXCESS -> EXCESS_CHARGING;
+                    case CHARGE_MODE_SMART -> SMART_CHARGING;
+                    //fixme always EXCESS_CHARGING_STOPPED,
+                    // no matter what mode the charger was in before stop
+                    case CHARGE_MODE_STOP -> EXCESS_CHARGING_STOPPED;
+                    //fixme fast charging not supported
+                    default ->
+                            throw new IllegalArgumentException("unknown charge state " + s.value);
+                }).orElse(UNCONNECTED);
+        this.goal.postValue(goal);
+        if (time != null) this.planEndTime.postValue(time);
+        this.chargerState.postValue(chState);
     }
 
     @Override

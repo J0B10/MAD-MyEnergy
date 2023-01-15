@@ -2,8 +2,10 @@ package io.github.j0b10.mad.myenergy.model.evcharger;
 
 import java.util.List;
 
+import io.github.j0b10.mad.myenergy.model.evcharger.dataQueries.SearchQuery;
 import io.github.j0b10.mad.myenergy.model.evcharger.dataQueries.SearchQueryItem;
 import io.github.j0b10.mad.myenergy.model.evcharger.measurements.Measurement;
+import io.github.j0b10.mad.myenergy.model.evcharger.parameters.DeviceParameters;
 import io.github.j0b10.mad.myenergy.model.evcharger.parameters.ParameterPutQuery;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,4 +19,7 @@ public interface EVChargerAPI {
 
     @PUT("/api/v1/parameters/IGULD:SELF")
     Call<Void> setParameters(@Body ParameterPutQuery parameters);
+
+    @POST("/api/v1/parameters/search/")
+    Call<List<DeviceParameters>> getParameters(@Body SearchQuery query);
 }

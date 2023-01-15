@@ -2,14 +2,16 @@ package io.github.j0b10.mad.myenergy.model.evcharger.parameters;
 
 import androidx.annotation.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ParameterPutQuery {
+public class DeviceParameters {
+
+    public final String componentId;
     public final List<Parameter> values;
 
-    public ParameterPutQuery(List<Parameter> values) {
+    public DeviceParameters(String componentId, List<Parameter> values) {
+        this.componentId = componentId;
         this.values = values;
     }
 
@@ -17,20 +19,21 @@ public class ParameterPutQuery {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ParameterPutQuery that = (ParameterPutQuery) o;
-        return Objects.equals(values, that.values);
+        DeviceParameters that = (DeviceParameters) o;
+        return Objects.equals(componentId, that.componentId) && Objects.equals(values, that.values);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(values);
+        return Objects.hash(componentId, values);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "ParameterPutQuery{" +
-                "values=" + values +
+        return "DeviceParameters{" +
+                "componentId='" + componentId + '\'' +
+                ", values=" + values +
                 '}';
     }
 }

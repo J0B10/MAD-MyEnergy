@@ -36,14 +36,17 @@ public class EVStatusAdapter extends BaseProvider implements StatusProvider {
         this.api = api;
     }
 
+    static <T> Map<String, T> toMap(List<T> list, Function<T, String> mapper) {
+        return list.stream().collect(Collectors.toMap(mapper, Function.identity()));
+    }
 
     @Override
     protected void update() throws IOException {
         Response<List<Measurement>> response = api
                 .getLiveData(List.of(new SearchQueryItem(ComponentId.PLANT, null)))
                 .execute();
-        Map<String, Measurement> measurements = Objects.requireNonNull(response.body()).stream()
-                .collect(Collectors.toMap(m -> m.channelId, Function.identity()));
+        Map<String, Measurement> measurements =
+                toMap(Objects.requireNonNull(response.body()), m -> m.channelId);
         Measurement gridFeedIn = measurements.get(ChannelId.Measurement.GRID_W);
         Measurement gridFeedOut = measurements.get(ChannelId.Measurement.GRID_W_CONSUMPTION);
         Measurement evConsumption = measurements.get(ChannelId.Measurement.EV_W);

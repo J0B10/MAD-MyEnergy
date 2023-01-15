@@ -3,7 +3,9 @@ package io.github.j0b10.mad.myenergy.ui.charging;
 import static com.google.android.material.color.MaterialColors.getColor;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.FAST_CHARGING;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.SMART_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.UNCONNECTED;
+import static io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity.TIME_FORMAT;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -25,7 +27,11 @@ import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 
+import java.text.DateFormat;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import io.github.j0b10.mad.myenergy.R;
@@ -41,6 +47,8 @@ import io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 public class ChargingFragment extends Fragment {
+
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy hh:mm");
 
     private FragmentChargingBinding binding;
     private ChargeInfoProvider chargeInfo;
@@ -91,6 +99,10 @@ public class ChargingFragment extends Fragment {
 
         if (chargeInfo != null) {
             chargeInfo.chargerState().observe(lifecycleOwner, this::onChargerStateChange);
+            chargeInfo.chargerState().observe(lifecycleOwner,
+                    state -> onEndTimeChange(chargeInfo.planEndTime().getValue(), state));
+            chargeInfo.planEndTime().observe(lifecycleOwner,
+                    time -> onEndTimeChange(time, chargeInfo.chargerState().getValue()));
             chargeInfo.evConsumption().observe(lifecycleOwner,
                     binding.energyFlowView.observePositiveFlowRate(attr.colorPrimary));
             chargeInfo.charge().observe(lifecycleOwner, this::onCharge);
@@ -167,10 +179,6 @@ public class ChargingFragment extends Fragment {
             case UNCONNECTED -> R.string.desc_disconnect;
             default -> R.string.desc_stop;
         });
-        binding.extraInfo.setText(switch (chargerState) {
-            case SMART_CHARGING -> getString(R.string.cp_title_until) + " hh:mm";
-            default -> "";
-        });
 
         binding.fabStartFast.setVisibility(
                 showIf(chargerState == ChargerState.FAST_CHARGING_STOPPED));
@@ -178,6 +186,23 @@ public class ChargingFragment extends Fragment {
                 showIf(chargerState == ChargerState.FAST_CHARGING));
         binding.speedDial.setVisibility(
                 showIf(!chargerState.isQuickCharge() && chargerState != UNCONNECTED));
+    }
+
+    private void onEndTimeChange(LocalDateTime endTime, ChargerState state) {
+        String text, time;
+        if (state == SMART_CHARGING) {
+            if (endTime == null) {
+                time = null;
+            } else if (endTime.toLocalDate().isEqual(LocalDate.now())){
+                time = TIME_FORMAT.format(endTime);
+            } else {
+                time = DATE_TIME_FORMAT.format(endTime);
+            }
+            text = getString(R.string.cp_title_until) + " " + time;
+        } else {
+            text = "";
+        }
+        binding.extraInfo.setText(text);
     }
 
     private void onError(@Nullable Exception e) {
@@ -226,12 +251,16 @@ public class ChargingFragment extends Fragment {
         if (selected.getId() == R.id.sd_plan_charging) {
             startActivity(new Intent(requireContext(), ChargePlanActivity.class));
         } else if (selected.getId() == R.id.sd_excess_charging && chargeControls != null) {
+            binding.cpProgress.show();
             chargeControls.startCharging(EXCESS_CHARGING, () -> {
-
+                binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
             });
         } else if (selected.getId() == R.id.sd_stop_charging && chargeControls != null) {
+            binding.cpProgress.show();
             chargeControls.stopCharging(() -> {
-
+                binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
             });
         }
         binding.speedDial.close();
@@ -244,12 +273,14 @@ public class ChargingFragment extends Fragment {
             binding.cpProgress.show();
             chargeControls.startCharging(FAST_CHARGING, () -> {
                 binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
             });
         } else if (fab.getId() == R.id.fab_stop_fast) {
             binding.fabStopFast.setVisibility(View.INVISIBLE);
             binding.cpProgress.show();
             chargeControls.stopCharging(() -> {
                 binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
             });
         }
     }

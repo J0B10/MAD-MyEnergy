@@ -11,5 +11,7 @@ public interface Provider {
 
     void configureInterval(Duration fetchInterval);
 
+    void requestUpdateNow();
+
     LiveData<Exception> error();
 }

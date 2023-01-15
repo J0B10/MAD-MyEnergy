@@ -16,6 +16,10 @@ public class Parameter {
         this.value = value;
     }
 
+    public Parameter(String channelId, String value, Instant timestamp) {
+        this(channelId, null, timestamp, value);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -33,6 +37,7 @@ public class Parameter {
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public String toString() {
         return "Parameter{" +
                 "channelId='" + channelId + '\'' +

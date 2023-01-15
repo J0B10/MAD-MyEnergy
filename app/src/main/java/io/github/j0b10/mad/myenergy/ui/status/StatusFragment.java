@@ -51,7 +51,7 @@ public class StatusFragment extends Fragment {
         Duration fetchInterval = Duration.ofMillis((long) (Float.parseFloat(fetchRateS) * 1000L));
 
         if (demoMode) {
-            status = new DemoStatusAdapter();
+            status = DemoStatusAdapter.getInstance();
             status.configureInterval(fetchInterval);
         } else {
             SessionManager sessionManager = SessionManager.getInstance(requireContext());

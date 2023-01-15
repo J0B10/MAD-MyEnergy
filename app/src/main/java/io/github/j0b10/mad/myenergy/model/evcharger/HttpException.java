@@ -1,5 +1,7 @@
 package io.github.j0b10.mad.myenergy.model.evcharger;
 
+import androidx.annotation.Nullable;
+
 import java.io.IOException;
 import java.util.Map;
 

@@ -60,9 +60,9 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
             charge = _charge;
             rate = _rate;
         }
-        if (state != oldState) chargerState.postValue(state);
         this.charge.postValue(charge);
         evConsumption.postValue(rate);
+        if (state != oldState) chargerState.postValue(state);
     }
 
     @Override
@@ -91,14 +91,14 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
     }
 
     @Override
-    public void planCharging(Duration duration, double total, Runnable onCharging) {
+    public void planCharging(Duration duration, int total, Runnable onCharging) {
         synchronized (this) {
             _state = SMART_CHARGING;
             _goal = total;
             _charge = 0.0;
         }
         planEndTime.setValue(LocalDateTime.now().plus(duration));
-        goal.setValue(total);
+        goal.setValue((double) total);
         charge.setValue(0.0);
         chargerState.setValue(SMART_CHARGING);
         onCharging.run();

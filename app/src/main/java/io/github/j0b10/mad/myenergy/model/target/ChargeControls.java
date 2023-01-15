@@ -6,7 +6,7 @@ import java.time.Duration;
 
 public interface ChargeControls {
 
-    void planCharging(Duration duration, double total, Runnable onCharging);
+    void planCharging(Duration duration, int total, Runnable onCharging);
 
     void startCharging(ChargerState mode, Runnable onCharging);
 

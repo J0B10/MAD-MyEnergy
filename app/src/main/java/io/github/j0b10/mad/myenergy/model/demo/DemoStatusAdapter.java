@@ -3,7 +3,6 @@ package io.github.j0b10.mad.myenergy.model.demo;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Random;
@@ -13,12 +12,22 @@ import io.github.j0b10.mad.myenergy.model.target.StatusProvider;
 
 public class DemoStatusAdapter extends BaseProvider implements StatusProvider {
 
+
+    private static DemoStatusAdapter instance;
     private final Random random = new Random();
     private final MutableLiveData<Double>
             gridFeedIn = new MutableLiveData<>(0.0),
             homeConsumption = new MutableLiveData<>(0.0),
             evConsumption = new MutableLiveData<>(0.0),
             pvProduction = new MutableLiveData<>(0.0);
+
+    private DemoStatusAdapter() {
+    }
+
+    public static DemoStatusAdapter getInstance() {
+        if (instance == null) instance = new DemoStatusAdapter();
+        return instance;
+    }
 
     @Override
     protected void update() {
