@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import okhttp3.Authenticator;
 import okhttp3.Interceptor;
@@ -12,12 +11,25 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
 
-public class TokenAuthenticator implements Authenticator {
+public class TokenAuthenticator implements Authenticator, Interceptor {
 
     private final SessionManager sessionManager;
 
     public TokenAuthenticator(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
+    }
+
+    @NonNull
+    @Override
+    public Response intercept(@NonNull Chain chain) throws IOException {
+        Request request = chain.request();
+        if (isRequestWithAccessToken(request)) {
+            return chain.proceed(request);
+        } else {
+            final String token = sessionManager.getAuthToken();
+            Request authRequest = newRequestWithAccessToken(chain.request(), token);
+            return chain.proceed(authRequest);
+        }
     }
 
     @Nullable
@@ -29,19 +41,27 @@ public class TokenAuthenticator implements Authenticator {
         }
         synchronized (this) {
             final String newToken = sessionManager.getAuthToken();
-            // Access token is refreshed in another thread.
-            if (!token.equals(newToken)) {
+
+            if (isRequestWithAccessToken(response.request())) {
+                //Request already had token, refresh it.
+
+                // Access token is refreshed in another thread.
+                if (!token.equals(newToken)) {
+                    return newRequestWithAccessToken(response.request(), newToken);
+                }
+
+                // Need to refresh an access token
+                final String updatedAccessToken = sessionManager.refreshAuthToken();
+                return newRequestWithAccessToken(response.request(), updatedAccessToken);
+            } else {
+                // Request without token, add one
                 return newRequestWithAccessToken(response.request(), newToken);
             }
-
-            // Need to refresh an access token
-            final String updatedAccessToken = sessionManager.refreshAuthToken();
-            return newRequestWithAccessToken(response.request(), updatedAccessToken);
         }
     }
 
-    private boolean isRequestWithAccessToken(@NonNull Response response) {
-        String header = response.request().header("Authorization");
+    private boolean isRequestWithAccessToken(@NonNull Request request) {
+        String header = request.header("Authorization");
         return header != null && header.startsWith("Bearer");
     }
 

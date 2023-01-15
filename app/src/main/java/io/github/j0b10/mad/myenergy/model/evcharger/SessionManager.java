@@ -74,8 +74,10 @@ public class SessionManager {
                 .addConverterFactory(GsonConverterFactory.create(GSON))
                 .build();
         auth = retrofit.create(EVChargerAuth.class);
+        TokenAuthenticator authenticator = new TokenAuthenticator(this);
         OkHttpClient okHttpAuthenticated = okHttp.newBuilder()
-                .authenticator(new TokenAuthenticator(this))
+                .addInterceptor(authenticator)
+                .authenticator(authenticator)
                 .build();
         api = retrofit.newBuilder().client(okHttpAuthenticated).build().create(EVChargerAPI.class);
     }
