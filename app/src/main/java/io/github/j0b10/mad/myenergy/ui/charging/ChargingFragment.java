@@ -3,6 +3,7 @@ package io.github.j0b10.mad.myenergy.ui.charging;
 import static com.google.android.material.color.MaterialColors.getColor;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.FAST_CHARGING;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.UNCONNECTED;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -176,7 +177,7 @@ public class ChargingFragment extends Fragment {
         binding.fabStopFast.setVisibility(
                 showIf(chargerState == ChargerState.FAST_CHARGING));
         binding.speedDial.setVisibility(
-                showIf(!chargerState.isQuickCharge()));
+                showIf(!chargerState.isQuickCharge() && chargerState != UNCONNECTED));
     }
 
     private void onError(@Nullable Exception e) {

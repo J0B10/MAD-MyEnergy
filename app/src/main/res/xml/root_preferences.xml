@@ -5,67 +5,64 @@
         app:enabled="false"
         app:icon="@drawable/qr_code"
         app:key="qr"
-        app:title="QR Code Import / Export">
+        app:title="@string/category_qr">
         <Preference
             app:key="qr_scan"
-            app:summary="Configure the app by Scanning a qr code. All settings will be overwritten by the ones from the QR code.\nOnly scan codes you trust!"
-            app:title="Scan QR Code" />
+            app:summary="@string/sum_qr_scan"
+            app:title="@string/pref_qr_scan" />
         <Preference
             app:key="qr_gen"
-            app:summary="Share your configuration with others by exporting it as QR code.\nShared settings do contain your password!"
-            app:title="Generate QR Code" />
+            app:summary="@string/sum_qr_gen"
+            app:title="@string/pref_qr_gen" />
     </PreferenceCategory>
     <PreferenceCategory
         app:key="connect"
-        app:title="Connected Chargers">
+        app:title="@string/category_connect">
+        <Preference
+            app:key="login"
+            app:summary="@string/sum_login"
+            app:title="@string/pref_login" />
+        <SwitchPreference
+            app:defaultValue="false"
+            app:key="demo"
+            app:summary="@string/sum_demo"
+            app:title="@string/pref_demo" />
         <EditTextPreference
-            android:defaultValue="5.0"
+            android:defaultValue="2.0"
             android:inputType="numberDecimal"
             android:key="fetch_rate"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="Fetch rate" />
-        <SwitchPreference
-            app:defaultValue="false"
-            app:key="demo"
-            app:summaryOff="Display random data.\nAllows showcasing the app without connecting an EV Charger."
-            app:title="Demo Mode" />
-        <Preference
-            app:key="login"
-            app:summary="Open Login dialog to modify the IP address of the connected EV Charger, your username or the password"
-            app:title="Login" />
+            android:title="@string/pref_fetch_rate" />
     </PreferenceCategory>
     <PreferenceCategory
         app:key="car"
-        app:title="Car Settings">
+        app:title="@string/category_car">
         <EditTextPreference
             android:inputType="numberDecimal"
             android:singleLine="true"
             android:selectAllOnFocus="true"
             app:defaultValue="50"
             app:key="car_battery"
-            app:summary="The usable capacity of the cars battery. \nUnit: kwh"
-            app:title="Battery Capacity" />
+            app:title="@string/pref_car_battery" />
         <EditTextPreference
             android:inputType="numberDecimal"
             android:singleLine="true"
             app:defaultValue="15.0"
             app:key="car_wltp"
-            app:summary="Amount of energy consumed per 100km driven. \nUnit: kWh/100km"
-            app:title="Energy Consumption" />
+            app:title="@string/pref_car_wltp" />
     </PreferenceCategory>
 
     <PreferenceCategory
         app:key="cp"
-        app:title="Charging Plan Settings">
+        app:title="@string/category_cp">
         <EditTextPreference
             android:inputType="number"
             android:singleLine="true"
             android:selectAllOnFocus="true"
             app:defaultValue="0"
             app:key="cp_amount"
-            app:summary="How much should be charged by default. \nUnit: kwh"
-            app:title="Default Amount" />
+            app:title="@string/pref_cp_amount" />
         <EditTextPreference
             android:inputType="number"
             android:singleLine="true"
@@ -73,8 +70,7 @@
             app:defaultValue="10800"
             app:enabled="false"
             app:key="cp_time"
-            app:summary="How long charging should take by default. \nUnit: min"
-            app:title="Default Duration" />
+            app:title="@string/pref_cp_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

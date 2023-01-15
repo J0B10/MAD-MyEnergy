@@ -50,4 +50,27 @@
     <string name="desc_plan">Charge the ev by the desired amount until the target time, maximizing pv usage.</string>
     <string name="desc_excess">Use only excess pv power to charge the connected ev.</string>
     <string name="desc_disconnect">Connect your ev to the charger and select a mode to start charging.</string>
+    <string name="value">Value: %s %s</string>
+    <string name="category_qr" translatable="false">QR Code Import / Export</string>
+    <string name="pref_qr_scan">Scan QR Code</string>
+    <string name="pref_qr_gen">Generate QR Code</string>
+    <string name="sum_qr_gen">Share your configuration with others by exporting it as QR code.\nShared settings do contain your password!</string>
+    <string name="category_connect">Connected Chargers</string>
+    <string name="pref_fetch_rate">Fetch rate</string>
+    <string name="sum_demo">Display random data.\nAllows showcasing the app without connecting an EV Charger.</string>
+    <string name="pref_demo">Demo Mode</string>
+    <string name="sum_login">Open Login dialog to modify the IP address of the connected EV Charger, your username or the password.</string>
+    <string name="pref_login" translatable="false">Login</string>
+    <string name="category_car">Car Settings</string>
+    <string name="pref_car_battery">Battery Capacity</string>
+    <string name="sum_car_battery">The usable capacity of the cars battery in kWh.</string>
+    <string name="sum_car_wltp">Average energy consumption of the car in kWh/100km.</string>
+    <string name="pref_car_wltp">Energy Consumption</string>
+    <string name="pref_cp_amount">Default Amount</string>
+    <string name="sum_cp_amount">How much should be charged by default in kWh.</string>
+    <string name="category_cp">Smart Charging Settings</string>
+    <string name="sum_cp_time">How long charging should take by default in minutes.</string>
+    <string name="pref_cp_title">Default Duration</string>
+    <string name="sum_qr_scan">Configure the app by scanning a qr code. All settings will be overwritten by the ones from the QR code. Only scan codes you trust!</string>
+    <string name="sum_fetch_rate" >Interval between refreshing status data from the caharger in seconds.</string>
 </resources>

@@ -28,7 +28,7 @@
     <string name="desc_scan">Einstellungen von QR-Code laden</string>
     <string name="lbl_or">oder</string>
     <string name="error_invalid_ip">%s ist keine gültige IPv4-Adresse!</string>
-    <string name="error_no_ip">Bitte gib eine IP-Addresse an!</string>
+    <string name="error_no_ip">Bitte gib eine IP-Adresse an!</string>
     <string name="error_no_user">Bitte gib deinen Benutzernamen an!</string>
     <string name="error_no_passwd">Bitte gib dein Password ein!</string>
     <string name="sd_lbl_stop">Laden stoppen</string>
@@ -48,5 +48,26 @@
     <string name="desc_fast">Das verbundene Fahrzeug wird mit der maximal verfügbaren Leistung geladen.</string>
     <string name="desc_plan">Lädt das Fahrzeug bis zum End-Zeitpunkt um die gewünschte Menge und maximiert PV-Nutzung.</string>
     <string name="desc_excess">Verwendet überschüssige PV-Energie um das Fahrzeug zu laden.</string>
-    <string name="desc_disconnect">Verbinden Sie ihr Fahrzeug mit der Ladestation und wählen Sie einen Lademodus aus.</string>
+    <string name="desc_disconnect">Verbinde dein Fahrzeug mit der Ladestation und wähle einen Lademodus aus.</string>
+    <string name="value">Wert: %s %s</string>
+    <string name="pref_qr_scan">QR Code scannen</string>
+    <string name="pref_qr_gen">QR Code generieren</string>
+    <string name="sum_qr_scan">Scanne einen QR code um die App zu Konfigurieren. Alle Einstellungen werden mit Werten aus dem Code überschrieben. Scanne nur QR Codes denen du vertraust!</string>
+    <string name="sum_qr_gen">Teile deine Konfiguration mit anderen indem du sie als QR Code exportierst. Der QR Code enthält auch dein Passwort!</string>
+    <string name="category_connect">Ladestationen</string>
+    <string name="pref_fetch_rate">Aktualisierungsrate</string>
+    <string name="sum_demo">Zeige nur Zufällige Daten. Erlaubt die App zu testen, ohne eine Ladestation zu verbinden.</string>
+    <string name="pref_demo">Demo Modus</string>
+    <string name="sum_login">Öffne die Login Seite um die IP-Adresse der Ladestation, deinen Benutzer oder dein Passwort zu ändern.</string>
+    <string name="category_car">Fahrzeugeinstellungen</string>
+    <string name="pref_car_battery">Batterie Kapazität</string>
+    <string name="sum_car_battery">Die verwendbare Kapazität des Fahrzeugs in kWh</string>
+    <string name="sum_car_wltp">Mittlerer Energieverbrauch des Fahrzeugs in kWh/100km.</string>
+    <string name="pref_car_wltp">Verbrauch</string>
+    <string name="pref_cp_amount">Standardmenge</string>
+    <string name="sum_cp_amount">Wie viel pro Ladevorgang geladen werden soll in kWh.</string>
+    <string name="category_cp">Intelligentes Laden Einstellungen</string>
+    <string name="sum_cp_time">Wie lange geladen werden soll in Minuten.</string>
+    <string name="pref_cp_title">Standarddauer</string>
+    <string name="sum_fetch_rate" >Intervall in dem Status Daten von der Ladestation aktualisiert werden in Sekunden.</string>
 </resources>

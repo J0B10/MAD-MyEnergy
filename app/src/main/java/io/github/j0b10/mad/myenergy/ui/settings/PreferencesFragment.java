@@ -21,15 +21,21 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             KEY_CHARGE_PLAN_AMOUNT = "cp_amount",
             KEY_CHARGE_PLAN_TIME = "cp_time";
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-        //noinspection ConstantConditions
         findPreference(KEY_LOGIN).setOnPreferenceClickListener(preference -> {
             startActivity(new Intent(requireContext(), LoginActivity.class)
                     .putExtra(LoginActivity.PARAM_BACK_ALLOWED, true));
             return true;
         });
+
+        findPreference(KEY_FETCH_RATE).setSummaryProvider(new ValueSummaryProvider(R.string.sum_fetch_rate, "s"));
+        findPreference(KEY_CAR_WLTP).setSummaryProvider(new ValueSummaryProvider(R.string.sum_car_wltp, "kWh/100km"));
+        findPreference(KEY_CAR_BATTERY).setSummaryProvider(new ValueSummaryProvider(R.string.sum_car_battery, "kWh"));
+        findPreference(KEY_CHARGE_PLAN_AMOUNT).setSummaryProvider(new ValueSummaryProvider(R.string.sum_cp_amount, "kWh"));
+        findPreference(KEY_CHARGE_PLAN_TIME).setSummaryProvider(new ValueSummaryProvider(R.string.sum_cp_time, "min"));
     }
 }
