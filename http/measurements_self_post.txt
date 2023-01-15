@@ -1,0 +1,25 @@
+POST /api/v1/measurements/live/ HTTP/1.1
+Host: 192.168.0.32
+Cookie: ********
+Content-Length: 30
+Sec-Ch-Ua: "Chromium";v="109", "Not_A Brand";v="99"
+Accept: application/json, text/plain, */*
+Content-Type: application/json
+Sec-Ch-Ua-Mobile: ?0
+Authorization: ********
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36
+Sec-Ch-Ua-Platform: "Windows"
+Origin: https://192.168.0.32
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://192.168.0.32/webui/Plant:1,IGULD:SELF/monitoring/view-current-measurement-values
+Accept-Encoding: gzip, deflate
+Accept-Language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+Connection: close
+
+[
+    {
+        "componentId": "IGULD:SELF"
+    }
+]
