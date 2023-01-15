@@ -3,9 +3,7 @@ package io.github.j0b10.mad.myenergy.ui.settings;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
+import com.takisoft.preferencex.PreferenceFragmentCompat;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
@@ -21,9 +19,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             KEY_CHARGE_PLAN_AMOUNT = "cp_amount",
             KEY_CHARGE_PLAN_TIME = "cp_time";
 
+
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferencesFix(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
         findPreference(KEY_LOGIN).setOnPreferenceClickListener(preference -> {
