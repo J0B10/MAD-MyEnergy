@@ -1,4 +1,5 @@
 *.iml
+*.pptx
 .gradle
 /local.properties
 .idea
