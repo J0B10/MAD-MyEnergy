@@ -7,7 +7,6 @@ import com.takisoft.preferencex.PreferenceFragmentCompat;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
-import io.github.j0b10.mad.myenergy.model.evcharger.authentication.AccountPreferences;
 import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {

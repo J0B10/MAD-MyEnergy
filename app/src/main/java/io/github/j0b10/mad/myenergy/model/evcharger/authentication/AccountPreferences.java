@@ -3,7 +3,6 @@ package io.github.j0b10.mad.myenergy.model.evcharger.authentication;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ConcurrentModificationException;

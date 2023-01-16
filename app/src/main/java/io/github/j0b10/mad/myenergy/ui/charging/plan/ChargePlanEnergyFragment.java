@@ -9,6 +9,9 @@ import static io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment.KEY_C
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,16 +21,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.ss.svs.SegmentedVerticalSeekBar;
 
-import java.time.format.DateTimeFormatter;
-
 import io.github.j0b10.mad.myenergy.databinding.FragmentChargePlanEnergyBinding;
-import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 public class ChargePlanEnergyFragment extends Fragment {
 

@@ -1,6 +1,10 @@
 package io.github.j0b10.mad.myenergy.model.demo;
 
-import static io.github.j0b10.mad.myenergy.model.target.ChargerState.*;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING_STOPPED;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.FAST_CHARGING_STOPPED;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.SMART_CHARGING;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.SMART_CHARGING_STOPPED;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -109,7 +113,7 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
         if (!mode.isCharging()) {
             throw new IllegalArgumentException("can't start charging in mode " + mode);
         }
-        double rate = (mode == EXCESS_CHARGING) ? 0.0 : 11.0;;
+        double rate = (mode == EXCESS_CHARGING) ? 0.0 : 11.0;
         synchronized (this) {
             _rate = rate;
             _goal = -1;

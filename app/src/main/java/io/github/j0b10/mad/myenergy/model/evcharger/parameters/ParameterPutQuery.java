@@ -2,7 +2,6 @@ package io.github.j0b10.mad.myenergy.model.evcharger.parameters;
 
 import androidx.annotation.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
