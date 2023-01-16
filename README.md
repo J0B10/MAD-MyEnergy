@@ -4,7 +4,7 @@
 
 [📱 **show all demo images**](demo)
 
-# Project Vision
+## Project Vision
 
 MyEnergy is an App for monitoring power usage in a Smart Home and controlling electric vehicle (ev) charging.
 It serves as an alternative to [SMAs](https://www.sma.de/) proprietary app [SMA Energy](https://play.google.com/store/apps/details?id=de.sma.energy).
@@ -29,7 +29,7 @@ While still retaining the feature set of SMA Energy, including:
 The ev charger has an undocumented RestAPI which can be reverse engineered for communication over LAN.  
 Inverter and Energy Management could be accessed over [ModbusTCP](https://en.wikipedia.org/wiki/Modbus), using [digitalpetri/modbus](https://github.com/digitalpetri/modbus) library or similar, but the ev charger should expose all needed data.
 
-# Credits
+## Credits
 
 ### Assets
 * [Material Symbols & Icons](https://fonts.google.com/icons) licensed under [Apache License 2.0](https://github.com/google/material-design-icons/blob/master/LICENSE)
@@ -47,3 +47,8 @@ Inverter and Energy Management could be accessed over [ModbusTCP](https://en.wik
 * [AndroidX Preference eXtended](https://github.com/takisoft/preferencex-android) licensed under [Apache License 2.0](https://github.com/takisoft/preferencex-android/blob/master/LICENSE)
 * [junit4](https://github.com/junit-team/junit4) licensed under [Eclipse Public License 1.0](https://github.com/junit-team/junit4/blob/main/LICENSE-junit.txt)
 * [TimeRangePicker](https://github.com/Droppers/TimeRangePicker) licensed under [MIT license](https://github.com/Droppers/TimeRangePicker/blob/main/LICENSE)
+
+## Charging demo
+
+https://user-images.githubusercontent.com/17405009/212706638-0cdc4317-3033-4e24-82e8-ff1d6afe8080.mp4
+
