@@ -1,11 +1,7 @@
-<!--
-[![Release](https://img.shields.io/github/v/release/J0B10/MAD-MyEnergy?include_prereleases&style=plastic)]( https://github.com/J0B10/MAD-MyEnergy/releases)
--->
-
 # MyEnergy
 
 <div align="center">
-<img src="demo/1_login.png" alt="Use Demo Mode to check out the app without connecting a charger." width="235"> <img src="demo/2_status.png" alt="All data live at a glance. Say goodbye to long loading times!" width="235"> <img src="demo/5_smart_charging.png" alt="Smart charge planning with integrated calculator." width="235"> <img src="demo/7_dark_mode.png" alt="Dark mode for the nocturnals and OLED devices." width="235">
+<img src="demo/1_login.png" alt="Use Demo Mode to check out the app without connecting a charger." width="200"> <img src="demo/2_status.png" alt="All data live at a glance. Say goodbye to long loading times!" width="200"> <img src="demo/5_smart_charging.png" alt="Smart charge planning with integrated calculator." width="200"> <img src="demo/7_dark_mode.png" alt="Dark mode for the nocturnals and OLED devices." width="200">
 
 [📱 **show all demo images**](demo)
 
@@ -62,8 +58,9 @@ Inverter and Energy Management could be accessed over [ModbusTCP](https://en.wik
 
 ## Charging demo
 
-<center>
+
+<div align="center">
 
 <https://user-images.githubusercontent.com/17405009/212706638-0cdc4317-3033-4e24-82e8-ff1d6afe8080.mp4>
 
-</center>
+</div>
