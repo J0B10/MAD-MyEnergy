@@ -35,7 +35,7 @@ dependencies {
 
     implementation 'com.takisoft.preferencex:preferencex:1.1.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'at.favre.lib:armadillo:1.0.0'
