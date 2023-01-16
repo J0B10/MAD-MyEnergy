@@ -37,14 +37,16 @@ import retrofit2.Response;
 
 public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvider {
 
+    private static final int CHASTT_UNCONNECTED = 200111;
+
     private final EVChargerAPI api;
 
     private final MutableLiveData<Boolean>
             isCharging = new MutableLiveData<>(false);
     private final MutableLiveData<ChargerState>
-            chargerState = new MutableLiveData<>(EXCESS_CHARGING);
+            chargerState = new MutableLiveData<>(UNCONNECTED);
 
-    private volatile boolean a;
+    private volatile boolean connected;
     private final MutableLiveData<Double>
             evConsumption = new MutableLiveData<>(0.0),
             charge = new MutableLiveData<>(0.0),
@@ -67,10 +69,16 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
         Map<String, Measurement> measurements = toMap(measurementList, m -> m.channelId);
         Measurement chargeWH = measurements.get(ChannelId.Measurement.EV_CHARGE_WH);
         Measurement evConsW = measurements.get(ChannelId.Measurement.EV_W);
+        Measurement chState = measurements.get(ChannelId.Measurement.EV_CHARGE_STATE);
+        boolean connected = Optional.ofNullable(chState)
+                .map(m -> m.values.get(0).value)
+                .map(val -> (int)((double) val) != CHASTT_UNCONNECTED).orElse(false);
         double charge = Optional.ofNullable(chargeWH)
                 .map(m -> m.values.get(0).value / 1000).orElse(0.0);
         double evConsumption = Optional.ofNullable(evConsW)
                 .map(m -> m.values.get(0).value / 1000).orElse(0.0);
+        setConnected(connected);
+        if (!connected) this.chargerState.postValue(UNCONNECTED);
         this.charge.postValue(charge);
         this.evConsumption.postValue(evConsumption);
     }
@@ -99,7 +107,15 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
                 }).orElse(UNCONNECTED);
         this.goal.postValue(goal);
         if (time != null) this.planEndTime.postValue(time);
-        this.chargerState.postValue(chState);
+        if (isConnected()) this.chargerState.postValue(chState);
+    }
+
+    private synchronized void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    private synchronized boolean isConnected() {
+        return this.connected;
     }
 
     @Override

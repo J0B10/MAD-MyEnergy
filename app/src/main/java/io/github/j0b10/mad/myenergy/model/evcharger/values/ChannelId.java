@@ -14,6 +14,7 @@ public interface ChannelId {
         String GRID_W_CONSUMPTION = "Measurement.Metering.PCCMs.PlntCsmpW";
         String EV_W = "Measurement.Metering.GridMs.TotWIn.ChaSta";
 
+        String EV_CHARGE_STATE = "Measurement.Operation.EVeh.ChaStt";
         String EV_CHARGE_WH = "Measurement.ChaSess.WhIn";
 
         String EV_MODE_HW_SWITCH = "Measurement.Chrg.ModSw";
