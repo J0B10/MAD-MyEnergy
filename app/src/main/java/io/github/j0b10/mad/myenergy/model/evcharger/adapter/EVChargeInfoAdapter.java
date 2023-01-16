@@ -12,15 +12,12 @@ import static io.github.j0b10.mad.myenergy.model.target.ChargerState.UNCONNECTED
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import io.github.j0b10.mad.myenergy.model.evcharger.EVChargerAPI;
 import io.github.j0b10.mad.myenergy.model.evcharger.dataQueries.SearchQuery;
@@ -33,7 +30,6 @@ import io.github.j0b10.mad.myenergy.model.evcharger.values.ComponentId;
 import io.github.j0b10.mad.myenergy.model.target.BaseProvider;
 import io.github.j0b10.mad.myenergy.model.target.ChargeInfoProvider;
 import io.github.j0b10.mad.myenergy.model.target.ChargerState;
-import retrofit2.Response;
 
 public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvider {
 

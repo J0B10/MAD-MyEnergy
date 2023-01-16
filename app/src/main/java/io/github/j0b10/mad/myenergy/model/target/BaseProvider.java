@@ -2,8 +2,6 @@ package io.github.j0b10.mad.myenergy.model.target;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 

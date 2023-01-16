@@ -30,7 +30,6 @@ import io.github.j0b10.mad.myenergy.databinding.ActivityChargePlanBinding;
 import io.github.j0b10.mad.myenergy.model.demo.DemoChargingAdapter;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
 import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter;
-import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeInfoAdapter;
 import io.github.j0b10.mad.myenergy.model.target.ChargeControls;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 

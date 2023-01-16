@@ -1,5 +1,7 @@
 package io.github.j0b10.mad.myenergy.model.evcharger.authentication;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
@@ -35,6 +37,7 @@ public class Token {
         return Objects.hash(access_token, expires_in, refresh_token, token_type, uiIdleTime);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Token{" +

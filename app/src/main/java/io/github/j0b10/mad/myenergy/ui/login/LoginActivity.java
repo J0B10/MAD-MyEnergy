@@ -20,8 +20,6 @@ import com.google.android.material.R.attr;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.time.Instant;
-
 import io.github.j0b10.mad.myenergy.MainActivity;
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.ActivityLoginBinding;

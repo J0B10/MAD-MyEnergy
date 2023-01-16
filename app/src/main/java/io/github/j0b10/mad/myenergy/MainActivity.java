@@ -1,6 +1,5 @@
 package io.github.j0b10.mad.myenergy;
 
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,11 +13,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.preference.PreferenceManager;
 
 import io.github.j0b10.mad.myenergy.databinding.ActivityMainBinding;
-import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
-import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 /**
  * Main Activity.

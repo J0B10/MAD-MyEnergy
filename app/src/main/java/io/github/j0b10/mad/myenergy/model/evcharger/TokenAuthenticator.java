@@ -34,7 +34,7 @@ public class TokenAuthenticator implements Authenticator, Interceptor {
 
     @Nullable
     @Override
-    public Request authenticate(Route route, Response response) {
+    public Request authenticate(Route route, @NonNull Response response) {
         final String token = sessionManager.getAuthToken();
         if (token == null) {
             return null;
