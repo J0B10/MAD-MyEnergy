@@ -127,10 +127,10 @@ public class ChargePlanActivity extends AppCompatActivity {
         binding.cpProgress.show();
         Duration duration = Objects.requireNonNull(model.duration.getValue());
         int total = Objects.requireNonNull(model.total.getValue());
-        chargeControls.planCharging(duration, total, () -> {
+        chargeControls.planCharging(duration, total, () -> runOnUiThread(() -> {
             setResult(Activity.RESULT_OK);
             finish();
-        });
+        }));
     }
 
     private void turnPage(int dir) {

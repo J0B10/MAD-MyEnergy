@@ -27,7 +27,6 @@ import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 
-import java.text.DateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,6 +54,11 @@ public class ChargingFragment extends Fragment {
     private ChargeControls chargeControls;
     private ValueAnimator batteryAnimation;
     private Snackbar errorMsg;
+
+    private static int showIf(boolean value) {
+        if (value) return View.VISIBLE;
+        else return View.INVISIBLE;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -105,10 +109,12 @@ public class ChargingFragment extends Fragment {
                     time -> onEndTimeChange(time, chargeInfo.chargerState().getValue()));
             chargeInfo.evConsumption().observe(lifecycleOwner,
                     binding.energyFlowView.observePositiveFlowRate(attr.colorPrimary));
+            chargeInfo.evConsumption().observe(lifecycleOwner, this::onChargeRateChange);
             chargeInfo.charge().observe(lifecycleOwner, this::onCharge);
             chargeInfo.error().observe(lifecycleOwner, this::onError);
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -143,9 +149,10 @@ public class ChargingFragment extends Fragment {
     }
 
     private void onCharge(double charge) {
+        ChargerState state = chargeInfo.chargerState().getValue();
         Double goal = chargeInfo.goal().getValue();
         String text;
-        if (goal == null) {
+        if (goal == null || state != SMART_CHARGING) {
             text = String.format(Locale.getDefault(), "%.1f kWh", charge);
         } else {
             text = String.format(Locale.getDefault(), "%.1f / %.1f kWh", charge, goal);
@@ -153,9 +160,8 @@ public class ChargingFragment extends Fragment {
         binding.chargeInfo.setText(text);
     }
 
-    @SuppressWarnings("SwitchStatementWithTooFewBranches")
-    private void onChargerStateChange(ChargerState chargerState) {
-        if (chargerState.isCharging()) {
+    private void onChargeRateChange(double evConsumption) {
+        if (evConsumption > 0) {
             if (batteryAnimation.isStarted()) batteryAnimation.resume();
             else batteryAnimation.start();
         } else {
@@ -164,7 +170,9 @@ public class ChargingFragment extends Fragment {
                 binding.chargeBattery.setChargeSecondary(0.0f);
             }
         }
+    }
 
+    private void onChargerStateChange(ChargerState chargerState) {
         binding.chargeMode.setText(switch (chargerState) {
             case FAST_CHARGING -> R.string.mode_fast;
             case SMART_CHARGING -> R.string.mode_plan;
@@ -193,7 +201,7 @@ public class ChargingFragment extends Fragment {
         if (state == SMART_CHARGING) {
             if (endTime == null) {
                 time = null;
-            } else if (endTime.toLocalDate().isEqual(LocalDate.now())){
+            } else if (endTime.toLocalDate().isEqual(LocalDate.now())) {
                 time = TIME_FORMAT.format(endTime);
             } else {
                 time = DATE_TIME_FORMAT.format(endTime);
@@ -219,6 +227,44 @@ public class ChargingFragment extends Fragment {
                 .setAnchorView(binding.speedDial);
         errorMsg.show();
         Log.w("Status", e);
+    }
+
+    private boolean onActionSelected(SpeedDialActionItem selected) {
+        if (selected.getId() == R.id.sd_plan_charging) {
+            startActivity(new Intent(requireContext(), ChargePlanActivity.class));
+        } else if (selected.getId() == R.id.sd_excess_charging && chargeControls != null) {
+            binding.cpProgress.show();
+            chargeControls.startCharging(EXCESS_CHARGING, onUiThread(() -> {
+                binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
+            }));
+        } else if (selected.getId() == R.id.sd_stop_charging && chargeControls != null) {
+            binding.cpProgress.show();
+            chargeControls.stopCharging(onUiThread(() -> {
+                binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
+            }));
+        }
+        binding.speedDial.close();
+        return false;
+    }
+
+    private void onFabClicked(View fab) {
+        if (fab.getId() == R.id.fab_start_fast) {
+            binding.fabStartFast.setVisibility(View.INVISIBLE);
+            binding.cpProgress.show();
+            chargeControls.startCharging(FAST_CHARGING, onUiThread(() -> {
+                binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
+            }));
+        } else if (fab.getId() == R.id.fab_stop_fast) {
+            binding.fabStopFast.setVisibility(View.INVISIBLE);
+            binding.cpProgress.show();
+            chargeControls.stopCharging(onUiThread(() -> {
+                binding.cpProgress.hide();
+                chargeInfo.requestUpdateNow();
+            }));
+        }
     }
 
     private void setupSpeedDial() {
@@ -247,47 +293,8 @@ public class ChargingFragment extends Fragment {
         binding.speedDial.setOnActionSelectedListener(this::onActionSelected);
     }
 
-    private boolean onActionSelected(SpeedDialActionItem selected) {
-        if (selected.getId() == R.id.sd_plan_charging) {
-            startActivity(new Intent(requireContext(), ChargePlanActivity.class));
-        } else if (selected.getId() == R.id.sd_excess_charging && chargeControls != null) {
-            binding.cpProgress.show();
-            chargeControls.startCharging(EXCESS_CHARGING, () -> {
-                binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
-            });
-        } else if (selected.getId() == R.id.sd_stop_charging && chargeControls != null) {
-            binding.cpProgress.show();
-            chargeControls.stopCharging(() -> {
-                binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
-            });
-        }
-        binding.speedDial.close();
-        return false;
-    }
-
-    private void onFabClicked(View fab) {
-        if (fab.getId() == R.id.fab_start_fast) {
-            binding.fabStartFast.setVisibility(View.INVISIBLE);
-            binding.cpProgress.show();
-            chargeControls.startCharging(FAST_CHARGING, () -> {
-                binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
-            });
-        } else if (fab.getId() == R.id.fab_stop_fast) {
-            binding.fabStopFast.setVisibility(View.INVISIBLE);
-            binding.cpProgress.show();
-            chargeControls.stopCharging(() -> {
-                binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
-            });
-        }
-    }
-
-    private static int showIf(boolean value) {
-        if (value) return View.VISIBLE;
-        else return View.INVISIBLE;
+    private Runnable onUiThread(Runnable runnable) {
+        return () -> requireActivity().runOnUiThread(runnable);
     }
 
 }
