@@ -31,8 +31,6 @@ import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String PARAM_BACK_ALLOWED = "back";
-
     private SessionManager sessionManager;
     private ActivityLoginBinding binding;
     private IPv4AddressFilter ipv4Filter;
@@ -69,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
         ipv4Filter = new IPv4AddressFilter();
         binding.loginIpInput.setFilters(new InputFilter[]{ipv4Filter});
 
-        backAllowed = getIntent().getBooleanExtra(PARAM_BACK_ALLOWED, false);
         if (accountPreferences.isLoginStored()) {
             binding.loginIpInput.setText(accountPreferences.getIpAddress());
             binding.loginUsrInput.setText(accountPreferences.getUsername());
@@ -85,17 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         binding = null;
         ipv4Filter = null;
         sessionManager = null;
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putBoolean(PARAM_BACK_ALLOWED, backAllowed);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        backAllowed = savedInstanceState.getBoolean(PARAM_BACK_ALLOWED, false);
     }
 
     private void onLoginClicked(View button) {

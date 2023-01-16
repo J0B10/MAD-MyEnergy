@@ -105,7 +105,7 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
     }
 
     @Override
-    public synchronized void startCharging(ChargerState mode, Runnable onCharging) {
+    public void startCharging(ChargerState mode, Runnable onCharging) {
         if (!mode.isCharging()) {
             throw new IllegalArgumentException("can't start charging in mode " + mode);
         }
@@ -124,7 +124,7 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
     }
 
     @Override
-    public synchronized void stopCharging(Runnable onStopped) {
+    public void stopCharging(Runnable onStopped) {
         ChargerState state;
         synchronized (this) {
             state = switch (_state) {
