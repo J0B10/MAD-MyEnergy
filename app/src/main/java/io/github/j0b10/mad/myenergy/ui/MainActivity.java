@@ -1,4 +1,4 @@
-package io.github.j0b10.mad.myenergy;
+package io.github.j0b10.mad.myenergy.ui;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.ActivityMainBinding;
 
 /**

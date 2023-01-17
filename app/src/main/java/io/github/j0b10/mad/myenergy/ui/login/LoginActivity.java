@@ -20,7 +20,7 @@ import com.google.android.material.R.attr;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
 
-import io.github.j0b10.mad.myenergy.MainActivity;
+import io.github.j0b10.mad.myenergy.ui.MainActivity;
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.ActivityLoginBinding;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
