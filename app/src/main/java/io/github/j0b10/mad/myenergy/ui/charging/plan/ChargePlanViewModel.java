@@ -1,12 +1,17 @@
 package io.github.j0b10.mad.myenergy.ui.charging.plan;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class ChargePlanViewModel extends ViewModel {
+import io.github.j0b10.mad.myenergy.model.demo.DemoChargingAdapter;
+import io.github.j0b10.mad.myenergy.model.evcharger.EVChargerAPI;
+import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter;
+import io.github.j0b10.mad.myenergy.model.target.ChargeControls;
+import io.github.j0b10.mad.myenergy.ui.viewmodel.SessionAwareViewModel;
+
+public class ChargePlanViewModel extends SessionAwareViewModel {
 
     final MutableLiveData<LocalDateTime> startTime;
     final MutableLiveData<LocalDateTime> planTime;
@@ -16,6 +21,8 @@ public class ChargePlanViewModel extends ViewModel {
     final MutableLiveData<Integer> stateCharge;
     final MutableLiveData<Integer> total;
 
+    private ChargeControls chargeControls;
+
     public ChargePlanViewModel() {
         stateCharge = new MutableLiveData<>(0);
         planCharge = new MutableLiveData<>(0);
@@ -23,5 +30,29 @@ public class ChargePlanViewModel extends ViewModel {
         startTime = new MutableLiveData<>();
         planTime = new MutableLiveData<>();
         duration = new MutableLiveData<>();
+    }
+
+    public ChargeControls controls() {
+        return chargeControls;
+    }
+
+    @Override
+    protected boolean areProvidersLoaded() {
+        return chargeControls != null;
+    }
+
+    @Override
+    protected void loadDemoProviders() {
+        chargeControls = DemoChargingAdapter.getInstance();
+    }
+
+    @Override
+    protected void loadProviders(EVChargerAPI api) {
+        chargeControls = new EVChargeControlAdapter(api);
+    }
+
+    @Override
+    protected void disposeProviders() {
+        chargeControls = null;
     }
 }

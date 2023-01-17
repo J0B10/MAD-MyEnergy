@@ -1,6 +1,5 @@
 package io.github.j0b10.mad.myenergy.ui.status;
 
-
 import static com.google.android.material.R.attr;
 import static com.google.android.material.color.MaterialColors.getColor;
 
@@ -17,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.color.MaterialColors;
@@ -26,19 +26,14 @@ import java.time.Duration;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.FragmentStatusBinding;
-import io.github.j0b10.mad.myenergy.model.demo.DemoStatusAdapter;
-import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
-import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVStatusAdapter;
-import io.github.j0b10.mad.myenergy.model.target.StatusProvider;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 import io.github.j0b10.mad.myenergy.ui.views.EnergyFlowView.Direction;
 
 public class StatusFragment extends Fragment {
 
     private FragmentStatusBinding binding;
-
     private Snackbar errorMsg;
-    private StatusProvider status;
+    private StatusViewModel model;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,18 +45,9 @@ public class StatusFragment extends Fragment {
         String fetchRateS = preferences.getString(PreferencesFragment.KEY_FETCH_RATE, "5.0");
         Duration fetchInterval = Duration.ofMillis((long) (Float.parseFloat(fetchRateS) * 1000L));
 
-        if (demoMode) {
-            status = DemoStatusAdapter.getInstance();
-            status.configureInterval(fetchInterval);
-        } else {
-            SessionManager sessionManager = SessionManager.getInstance(requireContext());
-            if (sessionManager.isLoggedIn()) {
-                status = new EVStatusAdapter(sessionManager.getAPI());
-                status.configureInterval(fetchInterval);
-            } else {
-                status = null;
-            }
-        }
+        model = new ViewModelProvider(this).get(StatusViewModel.class);
+        model.loadProviders(requireContext(), demoMode);
+        if (model.status() != null) model.status().configureInterval(fetchInterval);
 
         return binding.getRoot();
     }
@@ -72,34 +58,33 @@ public class StatusFragment extends Fragment {
 
         LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
-        if (status != null) {
-            status.gridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
-            status.homeConsumption().observe(lifecycleOwner,
+        if (model.status() != null) {
+            model.status().gridFeedIn().observe(lifecycleOwner, this::onGridFeedInChange);
+            model.status().homeConsumption().observe(lifecycleOwner,
                     binding.statusHomeView.observePositiveFlowRate(attr.colorError));
-            status.evConsumption().observe(lifecycleOwner,
+            model.status().evConsumption().observe(lifecycleOwner,
                     binding.statusEvView.observePositiveFlowRate(attr.colorPrimary));
-            status.pvProduction().observe(lifecycleOwner,
+            model.status().pvProduction().observe(lifecycleOwner,
                     binding.statusPvView.observePositiveFlowRate(attr.colorSecondary));
-            status.error().observe(lifecycleOwner, this::onError);
+            model.status().error().observe(lifecycleOwner, this::onError);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (status != null) status.start();
+        if (model.status() != null) model.status().start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (status != null) status.stop();
+        if (model.status() != null) model.status().stop();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        status = null;
         binding = null;
     }
 

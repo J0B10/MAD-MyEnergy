@@ -26,19 +26,21 @@ public abstract class BaseProvider implements Provider {
 
     protected abstract void update() throws Exception;
 
+    private void runUpdate() {
+        try {
+            update();
+            error.postValue(null);
+        } catch (InterruptedException ignored) {
+            //stop execution
+        } catch (Exception e) {
+            error.postValue(e);
+        }
+    }
+
     @Override
     public void requestUpdateNow() {
         if (executor == null) throw new IllegalStateException("provider not running");
-        executor.execute(() -> {
-            try {
-                update();
-                error.postValue(null);
-            } catch (InterruptedException ignored) {
-                //stop execution
-            } catch (Exception e) {
-                error.postValue(e);
-            }
-        });
+        executor.execute(this::runUpdate);
     }
 
     @Override
@@ -46,16 +48,7 @@ public abstract class BaseProvider implements Provider {
         if (fetchInterval == null)
             throw new IllegalStateException("configure fetch interval before starting the provider");
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(() -> {
-            try {
-                update();
-                error.postValue(null);
-            } catch (InterruptedException ignored) {
-                //stop execution
-            } catch (Exception e) {
-                error.postValue(e);
-            }
-        }, 0, fetchInterval.toMillis(), MILLISECONDS);
+        executor.scheduleAtFixedRate(this::runUpdate, 0, fetchInterval.toMillis(), MILLISECONDS);
     }
 
     @Override

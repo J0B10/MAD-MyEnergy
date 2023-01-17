@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.R.attr;
@@ -35,12 +36,6 @@ import java.util.Locale;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.FragmentChargingBinding;
-import io.github.j0b10.mad.myenergy.model.demo.DemoChargingAdapter;
-import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
-import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter;
-import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeInfoAdapter;
-import io.github.j0b10.mad.myenergy.model.target.ChargeControls;
-import io.github.j0b10.mad.myenergy.model.target.ChargeInfoProvider;
 import io.github.j0b10.mad.myenergy.model.target.ChargerState;
 import io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
@@ -50,8 +45,7 @@ public class ChargingFragment extends Fragment {
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy hh:mm");
 
     private FragmentChargingBinding binding;
-    private ChargeInfoProvider chargeInfo;
-    private ChargeControls chargeControls;
+    private ChargingViewModel model;
     private ValueAnimator batteryAnimation;
     private Snackbar errorMsg;
 
@@ -70,21 +64,9 @@ public class ChargingFragment extends Fragment {
         String fetchRateS = preferences.getString(PreferencesFragment.KEY_FETCH_RATE, "5.0");
         Duration fetchInterval = Duration.ofMillis((long) (Float.parseFloat(fetchRateS) * 1000L));
 
-        if (demoMode) {
-            chargeInfo = DemoChargingAdapter.getInstance();
-            chargeControls = DemoChargingAdapter.getInstance();
-            chargeInfo.configureInterval(fetchInterval);
-        } else {
-            SessionManager sessionManager = SessionManager.getInstance(requireContext());
-            if (sessionManager.isLoggedIn()) {
-                chargeInfo = new EVChargeInfoAdapter(sessionManager.getAPI());
-                chargeControls = new EVChargeControlAdapter(sessionManager.getAPI());
-                chargeInfo.configureInterval(fetchInterval);
-            } else {
-                chargeInfo = null;
-                chargeControls = null;
-            }
-        }
+        model = new ViewModelProvider(this).get(ChargingViewModel.class);
+        model.loadProviders(requireContext(), demoMode);
+        if (model.info() != null) model.info().configureInterval(fetchInterval);
 
         batteryAnimation = binding.chargeBattery.animateSecondaryCharge();
 
@@ -101,17 +83,17 @@ public class ChargingFragment extends Fragment {
 
         LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
-        if (chargeInfo != null) {
-            chargeInfo.chargerState().observe(lifecycleOwner, this::onChargerStateChange);
-            chargeInfo.chargerState().observe(lifecycleOwner,
-                    state -> onEndTimeChange(chargeInfo.planEndTime().getValue(), state));
-            chargeInfo.planEndTime().observe(lifecycleOwner,
-                    time -> onEndTimeChange(time, chargeInfo.chargerState().getValue()));
-            chargeInfo.evConsumption().observe(lifecycleOwner,
+        if (model.info() != null) {
+            model.info().chargerState().observe(lifecycleOwner, this::onChargerStateChange);
+            model.info().chargerState().observe(lifecycleOwner,
+                    state -> onEndTimeChange(model.info().planEndTime().getValue(), state));
+            model.info().planEndTime().observe(lifecycleOwner,
+                    time -> onEndTimeChange(time, model.info().chargerState().getValue()));
+            model.info().evConsumption().observe(lifecycleOwner,
                     binding.energyFlowView.observePositiveFlowRate(attr.colorPrimary));
-            chargeInfo.evConsumption().observe(lifecycleOwner, this::onChargeRateChange);
-            chargeInfo.charge().observe(lifecycleOwner, this::onCharge);
-            chargeInfo.error().observe(lifecycleOwner, this::onError);
+            model.info().evConsumption().observe(lifecycleOwner, this::onChargeRateChange);
+            model.info().charge().observe(lifecycleOwner, this::onCharge);
+            model.info().error().observe(lifecycleOwner, this::onError);
         }
     }
 
@@ -119,11 +101,11 @@ public class ChargingFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (chargeInfo == null) return;
+        if (model.info() == null) return;
 
-        chargeInfo.start();
+        model.info().start();
 
-        ChargerState state = chargeInfo.chargerState().getValue();
+        ChargerState state = model.info().chargerState().getValue();
         if (state != null && state.isCharging()) {
             if (batteryAnimation.isStarted()) batteryAnimation.resume();
             else batteryAnimation.start();
@@ -134,7 +116,7 @@ public class ChargingFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        if (chargeInfo != null) chargeInfo.stop();
+        if (model.info() != null) model.info().stop();
 
         if (batteryAnimation.isRunning()) {
             batteryAnimation.pause();
@@ -149,8 +131,8 @@ public class ChargingFragment extends Fragment {
     }
 
     private void onCharge(double charge) {
-        ChargerState state = chargeInfo.chargerState().getValue();
-        Double goal = chargeInfo.goal().getValue();
+        ChargerState state = model.info().chargerState().getValue();
+        Double goal = model.info().goal().getValue();
         String text;
         if (goal == null || state != SMART_CHARGING) {
             text = String.format(Locale.getDefault(), "%.1f kWh", charge);
@@ -232,17 +214,17 @@ public class ChargingFragment extends Fragment {
     private boolean onActionSelected(SpeedDialActionItem selected) {
         if (selected.getId() == R.id.sd_plan_charging) {
             startActivity(new Intent(requireContext(), ChargePlanActivity.class));
-        } else if (selected.getId() == R.id.sd_excess_charging && chargeControls != null) {
+        } else if (selected.getId() == R.id.sd_excess_charging && model.controls() != null) {
             binding.cpProgress.show();
-            chargeControls.startCharging(EXCESS_CHARGING, onUiThread(() -> {
+            model.controls().startCharging(EXCESS_CHARGING, onUiThread(() -> {
                 binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
+                model.info().requestUpdateNow();
             }));
-        } else if (selected.getId() == R.id.sd_stop_charging && chargeControls != null) {
+        } else if (selected.getId() == R.id.sd_stop_charging && model.controls() != null) {
             binding.cpProgress.show();
-            chargeControls.stopCharging(onUiThread(() -> {
+            model.controls().stopCharging(onUiThread(() -> {
                 binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
+                model.info().requestUpdateNow();
             }));
         }
         binding.speedDial.close();
@@ -253,16 +235,16 @@ public class ChargingFragment extends Fragment {
         if (fab.getId() == R.id.fab_start_fast) {
             binding.fabStartFast.setVisibility(View.INVISIBLE);
             binding.cpProgress.show();
-            chargeControls.startCharging(FAST_CHARGING, onUiThread(() -> {
+            model.controls().startCharging(FAST_CHARGING, onUiThread(() -> {
                 binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
+                model.info().requestUpdateNow();
             }));
         } else if (fab.getId() == R.id.fab_stop_fast) {
             binding.fabStopFast.setVisibility(View.INVISIBLE);
             binding.cpProgress.show();
-            chargeControls.stopCharging(onUiThread(() -> {
+            model.controls().stopCharging(onUiThread(() -> {
                 binding.cpProgress.hide();
-                chargeInfo.requestUpdateNow();
+                model.info().requestUpdateNow();
             }));
         }
     }

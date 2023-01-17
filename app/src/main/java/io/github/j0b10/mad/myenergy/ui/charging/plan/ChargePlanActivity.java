@@ -27,10 +27,6 @@ import java.util.Objects;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.ActivityChargePlanBinding;
-import io.github.j0b10.mad.myenergy.model.demo.DemoChargingAdapter;
-import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
-import io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter;
-import io.github.j0b10.mad.myenergy.model.target.ChargeControls;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
 public class ChargePlanActivity extends AppCompatActivity {
@@ -44,7 +40,6 @@ public class ChargePlanActivity extends AppCompatActivity {
     private FragmentAdapter adapter;
     private ActivityChargePlanBinding binding;
     private ChargePlanViewModel model;
-    private ChargeControls chargeControls;
 
     private Snackbar errorMsg;
 
@@ -58,17 +53,7 @@ public class ChargePlanActivity extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
-
-        if (demoMode) {
-            chargeControls = DemoChargingAdapter.getInstance();
-        } else {
-            SessionManager sessionManager = SessionManager.getInstance(this);
-            if (sessionManager.isLoggedIn()) {
-                chargeControls = new EVChargeControlAdapter(sessionManager.getAPI());
-            } else {
-                chargeControls = null;
-            }
-        }
+        model.loadProviders(this, demoMode);
 
         adapter = new FragmentAdapter(this);
         binding.cpViewPager.setAdapter(adapter);
@@ -87,7 +72,7 @@ public class ChargePlanActivity extends AppCompatActivity {
         binding.cpBtnNext.setOnClickListener(b -> turnPage(+1));
         binding.cpBtnCancel.setOnClickListener(b -> cancel());
 
-        chargeControls.error().observe(this, this::onError);
+        model.controls().error().observe(this, this::onError);
     }
 
 
@@ -126,7 +111,7 @@ public class ChargePlanActivity extends AppCompatActivity {
         binding.cpProgress.show();
         Duration duration = Objects.requireNonNull(model.duration.getValue());
         int total = Objects.requireNonNull(model.total.getValue());
-        chargeControls.planCharging(duration, total, () -> runOnUiThread(() -> {
+        model.controls().planCharging(duration, total, () -> runOnUiThread(() -> {
             setResult(Activity.RESULT_OK);
             finish();
         }));
