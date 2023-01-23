@@ -15,11 +15,11 @@ import io.github.j0b10.mad.myenergy.model.evcharger.parameters.ParameterPutQuery
 import io.github.j0b10.mad.myenergy.model.evcharger.values.ChannelId;
 import io.github.j0b10.mad.myenergy.model.target.ChargeControls;
 import io.github.j0b10.mad.myenergy.model.target.ChargerState;
-import kotlin.NotImplementedError;
 
 public class EVChargeControlAdapter implements ChargeControls {
 
     public static final String
+            CHARGE_MODE_FAST = "4718",
             CHARGE_MODE_EXCESS = "4719",
             CHARGE_MODE_SMART = "4720",
             CHARGE_MODE_STOP = "4721";
@@ -48,7 +48,7 @@ public class EVChargeControlAdapter implements ChargeControls {
         String chargeMode = switch (mode) {
             case EXCESS_CHARGING -> CHARGE_MODE_EXCESS;
             case SMART_CHARGING -> CHARGE_MODE_SMART;
-            case FAST_CHARGING -> throw new NotImplementedError("TODO");
+            case FAST_CHARGING -> CHARGE_MODE_FAST;
             default -> throw new IllegalArgumentException("can't start charging in mode " + mode);
         };
         ParameterPutQuery query = new ParameterPutQuery(List.of(
