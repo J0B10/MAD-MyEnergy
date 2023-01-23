@@ -1,11 +1,13 @@
 package io.github.j0b10.mad.myenergy.ui.charging;
 
+import static androidx.lifecycle.Transformations.map;
 import static com.google.android.material.color.MaterialColors.getColor;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.FAST_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.SMART_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.UNCONNECTED;
 import static io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity.TIME_FORMAT;
+import static io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment.KEY_QUICK_CHARGE_SPEED_ENABLED;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -33,6 +36,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.FragmentChargingBinding;
@@ -40,7 +45,7 @@ import io.github.j0b10.mad.myenergy.model.target.ChargerState;
 import io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
-public class ChargingFragment extends Fragment {
+public class ChargingFragment extends Fragment implements FragmentResultListener {
 
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy hh:mm");
 
@@ -77,16 +82,28 @@ public class ChargingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupSpeedDial();
-        binding.fabStartFast.setOnClickListener(this::onFabClicked);
-        binding.fabStopFast.setOnClickListener(this::onFabClicked);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        boolean canSetQCSpeed = preferences.getBoolean(KEY_QUICK_CHARGE_SPEED_ENABLED, false);
 
-        LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
+        setupSpeedDial();
 
         if (model.info() != null) {
+            binding.fabStartFast.setOnClickListener(this::onFabClicked);
+            binding.fabStopFast.setOnClickListener(this::onFabClicked);
+            if (canSetQCSpeed)
+                binding.energyFlowView.setOnLongClickListener(this::onChargeRatePressed);
+
+            LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
+
             model.info().chargerState().observe(lifecycleOwner, this::onChargerStateChange);
             model.info().chargerState().observe(lifecycleOwner,
                     state -> onEndTimeChange(model.info().planEndTime().getValue(), state));
+            if (canSetQCSpeed) {
+                map(model.info().chargerState(), ChargerState::isQuickCharge).observe(lifecycleOwner, qc -> {
+                    binding.energyFlowView.setClickable(qc);
+                    binding.energyFlowView.setLongClickable(qc);
+                });
+            }
             model.info().planEndTime().observe(lifecycleOwner,
                     time -> onEndTimeChange(time, model.info().chargerState().getValue()));
             model.info().evConsumption().observe(lifecycleOwner,
@@ -247,6 +264,29 @@ public class ChargingFragment extends Fragment {
                 model.info().requestUpdateNow();
             }));
         }
+    }
+
+    private boolean onChargeRatePressed(View energyFlowView) {
+        ChargerState state = Optional.ofNullable(model.info().chargerState().getValue())
+                .orElse(UNCONNECTED);
+        if (!state.isQuickCharge()) return false;
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("val", Objects.requireNonNull(model.info().chargeAlim().getValue()));
+        ChargeSpeedDialogFragment dialogFragment = new ChargeSpeedDialogFragment();
+        dialogFragment.setArguments(bundle);
+        dialogFragment.show(getChildFragmentManager(), ChargeSpeedDialogFragment.TAG);
+        dialogFragment.getParentFragmentManager().setFragmentResultListener(
+                ChargeSpeedDialogFragment.TAG, getViewLifecycleOwner(), this);
+        return true;
+    }
+
+    @Override
+    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+        int value = result.getInt("val", -1);
+        if (value == -1) throw new IllegalArgumentException("value not set");
+        binding.cpProgress.show();
+        model.controls().setChargeALim(value, binding.cpProgress::hide);
     }
 
     private void setupSpeedDial() {

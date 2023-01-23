@@ -61,16 +61,22 @@
     <string name="pref_demo">Demo Mode</string>
     <string name="sum_logout">Logout from current session and reconnect to an ev charger.</string>
     <string name="pref_logout" translatable="false">Logout</string>
-    <string name="category_car">Car Settings</string>
+    <string name="category_car">Car Properties</string>
     <string name="pref_car_battery">Battery Capacity</string>
     <string name="sum_car_battery">The usable capacity of the cars battery in kWh.</string>
     <string name="sum_car_wltp">Average energy consumption of the car in kWh/100km.</string>
     <string name="pref_car_wltp">Energy Consumption</string>
     <string name="pref_cp_amount">Default Amount</string>
     <string name="sum_cp_amount">How much should be charged by default in kWh.</string>
-    <string name="category_cp">Smart Charging Settings</string>
+    <string name="category_cp">Smart Charging</string>
     <string name="sum_cp_time">How long charging should take by default in minutes.</string>
     <string name="pref_cp_title">Default Duration</string>
     <string name="sum_qr_scan">Configure the app by scanning a qr code. All settings will be overwritten by the ones from the QR code. Only scan codes you trust!</string>
-    <string name="sum_fetch_rate" >Interval between refreshing status data from the caharger in seconds.</string>
+    <string name="sum_fetch_rate">Interval between refreshing status data from the caharger in seconds.</string>
+    <string name="category_quick_charge">Fast Charging</string>
+    <string name="pref_quick_charge_speed_enabled">Override charge rate</string>
+    <string name="sum_quick_charge_speed_enabled">Allow setting a custom charge speed in quick charge mode.\n<b>Setting a charge speed overwrites the max current in charger settings so be careful!</b></string>
+    <string name="pref_quick_charge_max">AC-Current Max</string>
+    <string name="sum_quick_charge_max"><b>\u26A0\uFE0F Do NEVER set this to a value higher than allowed by your net provider!</b>\n<b>In case of doubt, ask your electrician!</b></string>
+    <string name="lbl_charge_rate_kW" translatable="false">%.1f kW</string>
 </resources>

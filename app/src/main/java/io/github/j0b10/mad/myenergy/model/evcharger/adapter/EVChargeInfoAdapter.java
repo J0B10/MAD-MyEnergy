@@ -51,6 +51,8 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
             evConsumption = new MutableLiveData<>(0.0),
             charge = new MutableLiveData<>(0.0),
             goal = new MutableLiveData<>(null);
+
+    private final MutableLiveData<Integer> chargeALim = new MutableLiveData<>(16);
     private final MutableLiveData<LocalDateTime> planEndTime = new MutableLiveData<>();
     private volatile boolean connected;
 
@@ -80,7 +82,7 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
         double evConsumption = Optional.ofNullable(evConsW)
                 .map(m -> m.values.get(0).value / 1000).orElse(0.0);
         setConnected(connected);
-        if (!connected) this.chargerState.postValue(UNCONNECTED);
+        if (!isConnected()) this.chargerState.postValue(UNCONNECTED);
         this.charge.postValue(charge);
         this.evConsumption.postValue(evConsumption);
     }
@@ -90,6 +92,9 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
         Parameter goalW = parameters.get(ChannelId.Parameter.CHARGE_ENERGY);
         Parameter state = parameters.get(ChannelId.Parameter.CHARGE_MODE);
         Parameter planEnd = parameters.get(ChannelId.Parameter.EV_CHARGE_END_TM);
+        Parameter aLim = parameters.get(ChannelId.Parameter.EV_CHARGE_A_LIM);
+        int lim = (int) (double) Optional.ofNullable(aLim)
+                .map(p -> p.value).map(Double::parseDouble).orElse(16.0);
         double goal = Optional.ofNullable(goalW)
                 .map(p -> p.value).map(Double::parseDouble).orElse(0.0);
         LocalDateTime time = Optional.ofNullable(planEnd)
@@ -118,6 +123,7 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
                 }).orElse(UNCONNECTED);
         Log.i("EVChargeInfo", "state=" + chState);
         this.goal.postValue(goal);
+        this.chargeALim.postValue(lim);
         if (time != null) this.planEndTime.postValue(time);
         if (isConnected()) this.chargerState.postValue(chState);
     }
@@ -153,5 +159,10 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
     @Override
     public LiveData<LocalDateTime> planEndTime() {
         return planEndTime;
+    }
+
+    @Override
+    public LiveData<Integer> chargeAlim() {
+        return chargeALim;
     }
 }

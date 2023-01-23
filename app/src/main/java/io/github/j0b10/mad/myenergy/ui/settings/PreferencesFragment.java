@@ -1,7 +1,11 @@
 package io.github.j0b10.mad.myenergy.ui.settings;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+
+import androidx.preference.Preference;
 
 import com.takisoft.preferencex.PreferenceFragmentCompat;
 
@@ -9,7 +13,7 @@ import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
 import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
 
-public class PreferencesFragment extends PreferenceFragmentCompat {
+public class PreferencesFragment extends PreferenceFragmentCompat implements OnSharedPreferenceChangeListener {
 
     public static final String
             KEY_LOGIN = "login",
@@ -18,13 +22,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             KEY_CAR_WLTP = "car_wltp",
             KEY_CAR_BATTERY = "car_battery",
             KEY_CHARGE_PLAN_AMOUNT = "cp_amount",
-            KEY_CHARGE_PLAN_TIME = "cp_time";
+            KEY_CHARGE_PLAN_TIME = "cp_time",
+            KEY_QUICK_CHARGE_SPEED_ENABLED = "quick_charge_speed_enabled",
+            KEY_QUICK_CHARGE_MAX_CURRENT = "quick_charge_max";
+
+    private Preference pref_qc_max_curr;
 
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onCreatePreferencesFix(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+        SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
 
         boolean loggedIn = SessionManager.getInstance(requireContext()).isLoggedIn();
         findPreference(KEY_DEMO).setEnabled(loggedIn);
@@ -43,5 +53,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         findPreference(KEY_CAR_BATTERY).setSummaryProvider(new ValueSummaryProvider(R.string.sum_car_battery, "kWh"));
         findPreference(KEY_CHARGE_PLAN_AMOUNT).setSummaryProvider(new ValueSummaryProvider(R.string.sum_cp_amount, "kWh"));
         findPreference(KEY_CHARGE_PLAN_TIME).setSummaryProvider(new ValueSummaryProvider(R.string.sum_cp_time, "min"));
+        findPreference(KEY_QUICK_CHARGE_MAX_CURRENT).setSummaryProvider(new ValueSummaryProvider(R.string.sum_quick_charge_max, "A"));
+        findPreference(KEY_QUICK_CHARGE_MAX_CURRENT).setEnabled(preferences.getBoolean(KEY_QUICK_CHARGE_SPEED_ENABLED, false));
+        pref_qc_max_curr = findPreference(KEY_QUICK_CHARGE_MAX_CURRENT);
+
+        preferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        pref_qc_max_curr.setEnabled(sharedPreferences.getBoolean(KEY_QUICK_CHARGE_SPEED_ENABLED, false));
     }
 }

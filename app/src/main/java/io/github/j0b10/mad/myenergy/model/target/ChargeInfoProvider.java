@@ -16,4 +16,6 @@ public interface ChargeInfoProvider extends Provider {
 
     LiveData<LocalDateTime> planEndTime();
 
+    LiveData<Integer> chargeAlim();
+
 }

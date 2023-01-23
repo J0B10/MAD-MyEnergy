@@ -72,5 +72,21 @@
             app:key="cp_time"
             app:title="@string/pref_cp_title" />
     </PreferenceCategory>
+    <PreferenceCategory
+        app:key="quick_charge"
+        app:title="@string/category_quick_charge">
+        <SwitchPreference
+            app:defaultValue="false"
+            app:key="quick_charge_speed_enabled"
+            app:summary="@string/sum_quick_charge_speed_enabled"
+            app:title="@string/pref_quick_charge_speed_enabled" />
+        <EditTextPreference
+            android:inputType="number"
+            android:singleLine="true"
+            android:enabled="false"
+            app:defaultValue="16"
+            app:key="quick_charge_max"
+            app:title="@string/pref_quick_charge_max" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -10,6 +10,8 @@ public interface ChargeControls {
 
     void startCharging(ChargerState mode, Runnable onCharging);
 
+    void setChargeALim(int limit, Runnable onSetLimit);
+
     void stopCharging(Runnable onStopped);
 
     LiveData<Exception> error();

@@ -68,6 +68,15 @@ public class EVChargeControlAdapter implements ChargeControls {
     }
 
     @Override
+    public void setChargeALim(int limit, Runnable onLimitSet) {
+        Instant time = Instant.now();
+        ParameterPutQuery query = new ParameterPutQuery(List.of(
+                new Parameter(ChannelId.Parameter.EV_CHARGE_A_LIM, valueOf(limit), time)
+        ));
+        api.setParameters(query).enqueue(new PostErrorsCallback<>(error, onLimitSet));
+    }
+
+    @Override
     public LiveData<Exception> error() {
         return error;
     }
