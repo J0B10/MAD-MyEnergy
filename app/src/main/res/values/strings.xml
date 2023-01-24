@@ -77,6 +77,8 @@
     <string name="pref_quick_charge_speed_enabled">Override charge rate</string>
     <string name="sum_quick_charge_speed_enabled">Allow setting a custom charge speed in quick charge mode.\n<b>Setting a charge speed overwrites the max current in charger settings so be careful!</b></string>
     <string name="pref_quick_charge_max">AC-Current Max</string>
-    <string name="sum_quick_charge_max"><b>\u26A0\uFE0F Do NEVER set this to a value higher than allowed by your net provider!</b>\n<b>In case of doubt, ask your electrician!</b></string>
+    <string name="sum_quick_charge_max">\u26A0\uFE0F <b>Do NEVER set this to a value higher than allowed by your net provider!</b>\n<b>In case of doubt, ask your electrician!</b></string>
     <string name="lbl_charge_rate_kW" translatable="false">%.1f kW</string>
+    <string name="title_quick_charge_speed_reset">Reset charge limit?</string>
+    <string name="desc_quick_charge_speed_reset">A max charging current of <b>%dA</b> was set. Reset it to <b>%dA</b> ?</string>
 </resources>

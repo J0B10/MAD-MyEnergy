@@ -1,5 +1,7 @@
 package io.github.j0b10.mad.myenergy.ui.settings;
 
+import android.text.SpannableStringBuilder;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -22,9 +24,11 @@ public class ValueSummaryProvider implements Preference.SummaryProvider<EditText
     @Nullable
     @Override
     public CharSequence provideSummary(@NonNull EditTextPreference preference) {
-        String description = preference.getContext().getString(this.description);
+        CharSequence description = preference.getContext().getText(this.description);
         String text = preference.getText();
         String value = preference.getContext().getString(R.string.value, text, unit);
-        return description + "\n" + value;
+        return new SpannableStringBuilder(description)
+                .append("\n")
+                .append(value);
     }
 }

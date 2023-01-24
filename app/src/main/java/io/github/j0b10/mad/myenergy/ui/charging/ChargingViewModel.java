@@ -12,6 +12,8 @@ public class ChargingViewModel extends SessionAwareViewModel {
     private ChargeInfoProvider chargeInfo;
     private ChargeControls chargeControls;
 
+    boolean showChargeLimPrompt = true;
+
     public ChargeInfoProvider info() {
         return chargeInfo;
     }

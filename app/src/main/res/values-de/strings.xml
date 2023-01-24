@@ -74,5 +74,7 @@
     <string name="pref_quick_charge_speed_enabled">Ladeleistung überschreiben</string>
     <string name="sum_quick_charge_speed_enabled">Erlaubt die Ladeleistung im Schnelllade-Modus anzupassen.\n<b>Änderungen der Ladeleistung überschreiben den maximalen Ladestrom in den Einstellungen der Ladestation, also Vorsicht!</b></string>
     <string name="pref_quick_charge_max">AC-Strom Begrenzung</string>
-    <string name="sum_quick_charge_max"><b>\u26A0\uFE0F NIEMALS auf einen höheren Wert als vom Netzbetreiber zugelassen setzen!\nFrag deinen Elektroinstallateur!</b></string>
+    <string name="sum_quick_charge_max">\u26A0\uFE0F <b>NIEMALS auf einen höheren Wert als vom Netzbetreiber zugelassen setzen!</b>\n<b>Frag deinen Elektroinstallateur!</b></string>
+    <string name="title_quick_charge_speed_reset">Ladelimit zurücksetzen?</string>
+    <string name="desc_quick_charge_speed_reset">Der maximale Ladestrom wurde auf <b>%dA</b> gesetzt. Reset it to <b>%dA</b> ?</string>
 </resources>

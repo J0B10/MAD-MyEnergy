@@ -1,6 +1,5 @@
 package io.github.j0b10.mad.myenergy.ui.charging;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -9,8 +8,11 @@ import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.DialogChargeSpeedBinding;
@@ -29,12 +31,12 @@ public class ChargeSpeedDialogFragment extends DialogFragment {
         int val = args != null ? args.getInt("val", 6) : 6;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         binding = DialogChargeSpeedBinding.inflate(inflater, null, false);
-        builder.setView(binding.getRoot());
-        builder.setTitle(R.string.lbl_status_ev);
-        builder.setNegativeButton(R.string.btn_cancel, (d, i) -> requireDialog().cancel());
-        builder.setPositiveButton(R.string.btn_apply, this::onApply);
+        AlertDialog.Builder builder = new MaterialAlertDialogBuilder(requireContext())
+                .setView(binding.getRoot())
+                .setTitle(R.string.lbl_status_ev)
+                .setNegativeButton(R.string.btn_cancel, (d, i) -> requireDialog().cancel())
+                .setPositiveButton(R.string.btn_apply, this::onApply);
         String maxString = preferences.getString(PreferencesFragment.KEY_QUICK_CHARGE_MAX_CURRENT, "16");
         int max = Integer.parseInt(maxString);
         binding.speedSlider.setLabelFormatter(value -> {
