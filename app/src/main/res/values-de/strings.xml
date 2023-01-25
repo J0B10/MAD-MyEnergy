@@ -77,4 +77,6 @@
     <string name="sum_quick_charge_max">\u26A0\uFE0F <b>NIEMALS auf einen höheren Wert als vom Netzbetreiber zugelassen setzen!</b>\n<b>Frag deinen Elektroinstallateur!</b></string>
     <string name="title_quick_charge_speed_reset">Ladelimit zurücksetzen?</string>
     <string name="desc_quick_charge_speed_reset">Der maximale Ladestrom wurde auf <b>%dA</b> gesetzt. Reset it to <b>%dA</b> ?</string>
+    <string name="pref_inverters">PV Wechselrichter</string>
+    <string name="sum_inverters">Verbinde ein oder mehrere PV Wechselrichter über Modbus mit der App um ihre Leistungsdaten anzuzeigen.</string>
 </resources>

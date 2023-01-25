@@ -60,7 +60,7 @@ public class ChargingFragment extends Fragment implements FragmentResultListener
     private boolean canSetQCSpeed;
     private int maxChargeAmp;
 
-    private static int showIf(boolean value) {
+    public static int showIf(boolean value) {
         if (value) return View.VISIBLE;
         else return View.INVISIBLE;
     }

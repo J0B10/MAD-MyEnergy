@@ -27,6 +27,10 @@
             app:key="demo"
             app:summary="@string/sum_demo"
             app:title="@string/pref_demo" />
+        <Preference
+            app:key="inverters"
+            app:title="@string/pref_inverters"
+            app:summary="@string/sum_inverters" />
         <EditTextPreference
             android:defaultValue="2.0"
             android:inputType="numberDecimal"

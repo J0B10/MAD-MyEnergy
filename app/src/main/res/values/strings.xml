@@ -81,4 +81,8 @@
     <string name="lbl_charge_rate_kW" translatable="false">%.1f kW</string>
     <string name="title_quick_charge_speed_reset">Reset charge limit?</string>
     <string name="desc_quick_charge_speed_reset">A max charging current of <b>%dA</b> was set. Reset it to <b>%dA</b> ?</string>
+    <string name="lbl_inverter_model" translatable="false">Model: %s</string>
+    <string name="lbl_inverter_ip" translatable="false">%s:%d</string>
+    <string name="pref_inverters">PV Inverters</string>
+    <string name="sum_inverters">Connect one or multiple pv inverters to the app over modbus to display their output.</string>
 </resources>
