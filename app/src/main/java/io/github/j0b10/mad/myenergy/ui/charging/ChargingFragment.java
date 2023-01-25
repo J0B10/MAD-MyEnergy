@@ -49,7 +49,7 @@ public class ChargingFragment extends Fragment {
     private ValueAnimator batteryAnimation;
     private Snackbar errorMsg;
 
-    private static int showIf(boolean value) {
+    public static int showIf(boolean value) {
         if (value) return View.VISIBLE;
         else return View.INVISIBLE;
     }

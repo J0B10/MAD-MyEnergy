@@ -69,5 +69,8 @@
     <string name="category_cp">Intelligentes Laden Einstellungen</string>
     <string name="sum_cp_time">Wie lange geladen werden soll in Minuten.</string>
     <string name="pref_cp_title">Standarddauer</string>
-    <string name="sum_fetch_rate" >Intervall in dem Status Daten von der Ladestation aktualisiert werden in Sekunden.</string>
+    <string name="sum_fetch_rate">Intervall in dem Status Daten von der Ladestation aktualisiert werden in Sekunden.</string>
+    <string name="lbl_inverter_model">Model: %s</string>
+    <string name="pref_inverters">PV Wechselrichter</string>
+    <string name="sum_inverters">Verbinde ein oder mehrere PV Wechselrichter über Modbus mit der App um ihre Leistungsdaten anzuzeigen.</string>
 </resources>

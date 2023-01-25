@@ -39,5 +39,9 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.settings.pv.InvertersListActivity"
+            android:exported="false"
+            android:label="@string/pref_inverters" />
     </application>
 </manifest>

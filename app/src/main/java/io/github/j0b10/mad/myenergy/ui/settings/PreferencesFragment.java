@@ -8,12 +8,14 @@ import com.takisoft.preferencex.PreferenceFragmentCompat;
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.model.evcharger.SessionManager;
 import io.github.j0b10.mad.myenergy.ui.login.LoginActivity;
+import io.github.j0b10.mad.myenergy.ui.settings.pv.InvertersListActivity;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
     public static final String
             KEY_LOGIN = "login",
             KEY_DEMO = "demo",
+            KEY_INVERTERS = "inverters",
             KEY_FETCH_RATE = "fetch_rate",
             KEY_CAR_WLTP = "car_wltp",
             KEY_CAR_BATTERY = "car_battery",
@@ -28,8 +30,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         boolean loggedIn = SessionManager.getInstance(requireContext()).isLoggedIn();
         findPreference(KEY_DEMO).setEnabled(loggedIn);
+        /*findPreference(KEY_INVERTERS).setEnabled(loggedIn);
+        if (loggedIn)*/
+        findPreference(KEY_INVERTERS).setOnPreferenceClickListener(pref -> {
+            startActivity(new Intent(requireContext(), InvertersListActivity.class));
+            return true;
+        });
 
-        findPreference(KEY_LOGIN).setOnPreferenceClickListener(preference -> {
+        findPreference(KEY_LOGIN).setOnPreferenceClickListener(pref -> {
             SessionManager sessionManager = SessionManager.getInstance(requireContext());
             sessionManager.getAccountPreferences().removeAccount();
             sessionManager.logout();

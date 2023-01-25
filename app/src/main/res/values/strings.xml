@@ -72,5 +72,9 @@
     <string name="sum_cp_time">How long charging should take by default in minutes.</string>
     <string name="pref_cp_title">Default Duration</string>
     <string name="sum_qr_scan">Configure the app by scanning a qr code. All settings will be overwritten by the ones from the QR code. Only scan codes you trust!</string>
-    <string name="sum_fetch_rate" >Interval between refreshing status data from the caharger in seconds.</string>
+    <string name="sum_fetch_rate">Interval between refreshing status data from the caharger in seconds.</string>
+    <string name="lbl_inverter_model">Model: %s</string>
+    <string name="lbl_inverter_ip" translatable="false">%s:%d</string>
+    <string name="pref_inverters">PV Inverters</string>
+    <string name="sum_inverters">Connect one or multiple pv inverters to the app over modbus to display their output.</string>
 </resources>
