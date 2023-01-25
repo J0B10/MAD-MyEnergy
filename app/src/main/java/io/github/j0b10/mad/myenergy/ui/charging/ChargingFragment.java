@@ -1,11 +1,14 @@
 package io.github.j0b10.mad.myenergy.ui.charging;
 
+import static androidx.lifecycle.Transformations.distinctUntilChanged;
+import static androidx.lifecycle.Transformations.map;
 import static com.google.android.material.color.MaterialColors.getColor;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.FAST_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.SMART_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.UNCONNECTED;
 import static io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity.TIME_FORMAT;
+import static io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment.KEY_QUICK_CHARGE_SPEED_ENABLED;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -18,13 +21,16 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.R.attr;
 import com.google.android.material.color.MaterialColors;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 
@@ -33,6 +39,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 import io.github.j0b10.mad.myenergy.R;
 import io.github.j0b10.mad.myenergy.databinding.FragmentChargingBinding;
@@ -40,7 +48,7 @@ import io.github.j0b10.mad.myenergy.model.target.ChargerState;
 import io.github.j0b10.mad.myenergy.ui.charging.plan.ChargePlanActivity;
 import io.github.j0b10.mad.myenergy.ui.settings.PreferencesFragment;
 
-public class ChargingFragment extends Fragment {
+public class ChargingFragment extends Fragment implements FragmentResultListener {
 
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yy hh:mm");
 
@@ -48,6 +56,9 @@ public class ChargingFragment extends Fragment {
     private ChargingViewModel model;
     private ValueAnimator batteryAnimation;
     private Snackbar errorMsg;
+    private AlertDialog resetChargeLimPrompt;
+    private boolean canSetQCSpeed;
+    private int maxChargeAmp;
 
     public static int showIf(boolean value) {
         if (value) return View.VISIBLE;
@@ -62,6 +73,9 @@ public class ChargingFragment extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         boolean demoMode = preferences.getBoolean(PreferencesFragment.KEY_DEMO, false);
         String fetchRateS = preferences.getString(PreferencesFragment.KEY_FETCH_RATE, "5.0");
+        String maxChargeS = preferences.getString(PreferencesFragment.KEY_QUICK_CHARGE_MAX_CURRENT, "16");
+        canSetQCSpeed = preferences.getBoolean(KEY_QUICK_CHARGE_SPEED_ENABLED, false);
+        maxChargeAmp = Integer.parseInt(maxChargeS);
         Duration fetchInterval = Duration.ofMillis((long) (Float.parseFloat(fetchRateS) * 1000L));
 
         model = new ViewModelProvider(this).get(ChargingViewModel.class);
@@ -78,20 +92,34 @@ public class ChargingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         setupSpeedDial();
-        binding.fabStartFast.setOnClickListener(this::onFabClicked);
-        binding.fabStopFast.setOnClickListener(this::onFabClicked);
-
-        LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
 
         if (model.info() != null) {
-            model.info().chargerState().observe(lifecycleOwner, this::onChargerStateChange);
-            model.info().chargerState().observe(lifecycleOwner,
-                    state -> onEndTimeChange(model.info().planEndTime().getValue(), state));
-            model.info().planEndTime().observe(lifecycleOwner,
-                    time -> onEndTimeChange(time, model.info().chargerState().getValue()));
-            model.info().evConsumption().observe(lifecycleOwner,
-                    binding.energyFlowView.observePositiveFlowRate(attr.colorPrimary));
-            model.info().evConsumption().observe(lifecycleOwner, this::onChargeRateChange);
+            binding.fabStartFast.setOnClickListener(this::onFabClicked);
+            binding.fabStopFast.setOnClickListener(this::onFabClicked);
+            if (canSetQCSpeed)
+                binding.energyFlowView.setOnLongClickListener(this::onChargeRatePressed);
+
+            LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
+
+            distinctUntilChanged(model.info().chargerState())
+                    .observe(lifecycleOwner, this::onChargerStateChange);
+            distinctUntilChanged(model.info().chargerState())
+                    .observe(lifecycleOwner, state
+                            -> onEndTimeChange(model.info().planEndTime().getValue(), state));
+            if (canSetQCSpeed) {
+                map(model.info().chargerState(), ChargerState::isQuickCharge)
+                        .observe(lifecycleOwner, qc -> {
+                            binding.energyFlowView.setClickable(qc);
+                            binding.energyFlowView.setLongClickable(qc);
+                        });
+            }
+            distinctUntilChanged(model.info().planEndTime())
+                    .observe(lifecycleOwner, time
+                            -> onEndTimeChange(time, model.info().chargerState().getValue()));
+            model.info().evConsumption()
+                    .observe(lifecycleOwner,
+                            binding.energyFlowView.observePositiveFlowRate(attr.colorPrimary));
+            model.info().evConsumption().observe(lifecycleOwner, this::onChargeRateUpdate);
             model.info().charge().observe(lifecycleOwner, this::onCharge);
             model.info().error().observe(lifecycleOwner, this::onError);
         }
@@ -128,6 +156,9 @@ public class ChargingFragment extends Fragment {
         super.onDestroyView();
         batteryAnimation = null;
         binding = null;
+        errorMsg = null;
+        model = null;
+        resetChargeLimPrompt = null;
     }
 
     private void onCharge(double charge) {
@@ -142,7 +173,7 @@ public class ChargingFragment extends Fragment {
         binding.chargeInfo.setText(text);
     }
 
-    private void onChargeRateChange(double evConsumption) {
+    private void onChargeRateUpdate(double evConsumption) {
         if (evConsumption > 0) {
             if (batteryAnimation.isStarted()) batteryAnimation.resume();
             else batteryAnimation.start();
@@ -176,6 +207,12 @@ public class ChargingFragment extends Fragment {
                 showIf(chargerState == ChargerState.FAST_CHARGING));
         binding.speedDial.setVisibility(
                 showIf(!chargerState.isQuickCharge() && chargerState != UNCONNECTED));
+
+        int chargeAlim = Objects.requireNonNull(model.info().chargeAlim().getValue());
+        if (canSetQCSpeed && model.showChargeLimPrompt
+                && !chargerState.isQuickCharge() && maxChargeAmp != chargeAlim) {
+            showResetChargeLimPrompt();
+        }
     }
 
     private void onEndTimeChange(LocalDateTime endTime, ChargerState state) {
@@ -249,6 +286,29 @@ public class ChargingFragment extends Fragment {
         }
     }
 
+    private boolean onChargeRatePressed(View energyFlowView) {
+        ChargerState state = Optional.ofNullable(model.info().chargerState().getValue())
+                .orElse(UNCONNECTED);
+        if (!state.isQuickCharge()) return false;
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("val", Objects.requireNonNull(model.info().chargeAlim().getValue()));
+        ChargeSpeedDialogFragment dialogFragment = new ChargeSpeedDialogFragment();
+        dialogFragment.setArguments(bundle);
+        dialogFragment.show(getChildFragmentManager(), ChargeSpeedDialogFragment.TAG);
+        dialogFragment.getParentFragmentManager().setFragmentResultListener(
+                ChargeSpeedDialogFragment.TAG, getViewLifecycleOwner(), this);
+        return true;
+    }
+
+    @Override
+    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+        int value = result.getInt("val", -1);
+        if (value == -1) throw new IllegalArgumentException("value not set");
+        binding.cpProgress.show();
+        model.controls().setChargeALim(value, binding.cpProgress::hide);
+    }
+
     private void setupSpeedDial() {
         binding.speedDial.addActionItem(
                 new SpeedDialActionItem.Builder(R.id.sd_plan_charging, R.drawable.sd_plan)
@@ -273,6 +333,31 @@ public class ChargingFragment extends Fragment {
                 , 2);
         binding.overlay.setOnClickListener(v -> binding.speedDial.close(true));
         binding.speedDial.setOnActionSelectedListener(this::onActionSelected);
+    }
+
+    private void showResetChargeLimPrompt() {
+        int chargeAlim = Objects.requireNonNull(model.info().chargeAlim().getValue());
+        String message = getString(R.string.desc_quick_charge_speed_reset, chargeAlim, maxChargeAmp);
+        if (resetChargeLimPrompt != null) {
+            resetChargeLimPrompt.setMessage(message);
+        } else {
+            resetChargeLimPrompt = new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.title_quick_charge_speed_reset)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.btn_apply, (d, i) -> {
+                        binding.cpProgress.show();
+                        model.controls().setChargeALim(this.maxChargeAmp, binding.cpProgress::hide);
+                        resetChargeLimPrompt.dismiss();
+                        resetChargeLimPrompt = null;
+                    })
+                    .setNegativeButton(R.string.btn_cancel, (d, i) -> {
+                        model.showChargeLimPrompt = false;
+                        resetChargeLimPrompt.cancel();
+                        resetChargeLimPrompt = null;
+                    })
+                    .create();
+            resetChargeLimPrompt.show();
+        }
     }
 
     private Runnable onUiThread(Runnable runnable) {

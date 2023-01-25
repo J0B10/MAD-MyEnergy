@@ -59,18 +59,24 @@
     <string name="sum_demo">Zeige nur Zufällige Daten. Erlaubt die App zu testen, ohne eine Ladestation zu verbinden.</string>
     <string name="pref_demo">Demo Modus</string>
     <string name="sum_logout">Aktuelle Session trennen und Login Seite zeigen um sich mit einer Ladestation zu verbinden.</string>
-    <string name="category_car">Fahrzeugeinstellungen</string>
+    <string name="category_car">Fahrzeugeigenschaften</string>
     <string name="pref_car_battery">Batterie Kapazität</string>
     <string name="sum_car_battery">Die verwendbare Kapazität des Fahrzeugs in kWh</string>
     <string name="sum_car_wltp">Mittlerer Energieverbrauch des Fahrzeugs in kWh/100km.</string>
     <string name="pref_car_wltp">Verbrauch</string>
     <string name="pref_cp_amount">Standardmenge</string>
     <string name="sum_cp_amount">Wie viel pro Ladevorgang geladen werden soll in kWh.</string>
-    <string name="category_cp">Intelligentes Laden Einstellungen</string>
+    <string name="category_cp">Intelligentes Laden</string>
     <string name="sum_cp_time">Wie lange geladen werden soll in Minuten.</string>
     <string name="pref_cp_title">Standarddauer</string>
     <string name="sum_fetch_rate">Intervall in dem Status Daten von der Ladestation aktualisiert werden in Sekunden.</string>
-    <string name="lbl_inverter_model">Model: %s</string>
+    <string name="category_quick_charge">Schnellladen</string>
+    <string name="pref_quick_charge_speed_enabled">Ladeleistung überschreiben</string>
+    <string name="sum_quick_charge_speed_enabled">Erlaubt die Ladeleistung im Schnelllade-Modus anzupassen.\n<b>Änderungen der Ladeleistung überschreiben den maximalen Ladestrom in den Einstellungen der Ladestation, also Vorsicht!</b></string>
+    <string name="pref_quick_charge_max">AC-Strom Begrenzung</string>
+    <string name="sum_quick_charge_max">\u26A0\uFE0F <b>NIEMALS auf einen höheren Wert als vom Netzbetreiber zugelassen setzen!</b>\n<b>Frag deinen Elektroinstallateur!</b></string>
+    <string name="title_quick_charge_speed_reset">Ladelimit zurücksetzen?</string>
+    <string name="desc_quick_charge_speed_reset">Der maximale Ladestrom wurde auf <b>%dA</b> gesetzt. Reset it to <b>%dA</b> ?</string>
     <string name="pref_inverters">PV Wechselrichter</string>
     <string name="sum_inverters">Verbinde ein oder mehrere PV Wechselrichter über Modbus mit der App um ihre Leistungsdaten anzuzeigen.</string>
 </resources>

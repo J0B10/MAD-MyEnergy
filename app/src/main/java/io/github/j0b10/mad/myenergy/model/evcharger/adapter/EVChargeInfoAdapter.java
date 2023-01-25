@@ -1,13 +1,18 @@
 package io.github.j0b10.mad.myenergy.model.evcharger.adapter;
 
 import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter.CHARGE_MODE_EXCESS;
+import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter.CHARGE_MODE_FAST;
 import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter.CHARGE_MODE_SMART;
 import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVChargeControlAdapter.CHARGE_MODE_STOP;
 import static io.github.j0b10.mad.myenergy.model.evcharger.adapter.EVStatusAdapter.toMap;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.EXCESS_CHARGING_STOPPED;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.FAST_CHARGING;
+import static io.github.j0b10.mad.myenergy.model.target.ChargerState.FAST_CHARGING_STOPPED;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.SMART_CHARGING;
 import static io.github.j0b10.mad.myenergy.model.target.ChargerState.UNCONNECTED;
+
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,6 +20,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,13 +47,14 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
             isCharging = new MutableLiveData<>(false);
     private final MutableLiveData<ChargerState>
             chargerState = new MutableLiveData<>(UNCONNECTED);
-
-    private volatile boolean connected;
     private final MutableLiveData<Double>
             evConsumption = new MutableLiveData<>(0.0),
             charge = new MutableLiveData<>(0.0),
             goal = new MutableLiveData<>(null);
+
+    private final MutableLiveData<Integer> chargeALim = new MutableLiveData<>(16);
     private final MutableLiveData<LocalDateTime> planEndTime = new MutableLiveData<>();
+    private volatile boolean connected;
 
 
     public EVChargeInfoAdapter(EVChargerAPI api) {
@@ -56,11 +63,12 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
 
     @Override
     protected void update() {
-            api.getLiveData(List.of(new SearchQueryItem(ComponentId.SELF, null)))
-                    .enqueue(new PostErrorsCallback<>(error, this::onFetchMeasurements));
-            api.getParameters(new SearchQuery(List.of(new SearchQueryItem(ComponentId.SELF, null))))
-                   .enqueue(new PostErrorsCallback<>(error, this::onFetchParameters));
+        api.getLiveData(List.of(new SearchQueryItem(ComponentId.SELF, null)))
+                .enqueue(new PostErrorsCallback<>(error, this::onFetchMeasurements));
+        api.getParameters(new SearchQuery(List.of(new SearchQueryItem(ComponentId.SELF, null))))
+                .enqueue(new PostErrorsCallback<>(error, this::onFetchParameters));
     }
+
     private void onFetchMeasurements(List<Measurement> measurementList) {
         Map<String, Measurement> measurements = toMap(measurementList, m -> m.channelId);
         Measurement chargeWH = measurements.get(ChannelId.Measurement.EV_CHARGE_WH);
@@ -68,13 +76,13 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
         Measurement chState = measurements.get(ChannelId.Measurement.EV_CHARGE_STATE);
         boolean connected = Optional.ofNullable(chState)
                 .map(m -> m.values.get(0).value)
-                .map(val -> (int)((double) val) != CHASTT_UNCONNECTED).orElse(false);
+                .map(val -> (int) ((double) val) != CHASTT_UNCONNECTED).orElse(false);
         double charge = Optional.ofNullable(chargeWH)
                 .map(m -> m.values.get(0).value / 1000).orElse(0.0);
         double evConsumption = Optional.ofNullable(evConsW)
                 .map(m -> m.values.get(0).value / 1000).orElse(0.0);
         setConnected(connected);
-        if (!connected) this.chargerState.postValue(UNCONNECTED);
+        if (!isConnected()) this.chargerState.postValue(UNCONNECTED);
         this.charge.postValue(charge);
         this.evConsumption.postValue(evConsumption);
     }
@@ -84,6 +92,9 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
         Parameter goalW = parameters.get(ChannelId.Parameter.CHARGE_ENERGY);
         Parameter state = parameters.get(ChannelId.Parameter.CHARGE_MODE);
         Parameter planEnd = parameters.get(ChannelId.Parameter.EV_CHARGE_END_TM);
+        Parameter aLim = parameters.get(ChannelId.Parameter.EV_CHARGE_A_LIM);
+        int lim = (int) (double) Optional.ofNullable(aLim)
+                .map(p -> p.value).map(Double::parseDouble).orElse(16.0);
         double goal = Optional.ofNullable(goalW)
                 .map(p -> p.value).map(Double::parseDouble).orElse(0.0);
         LocalDateTime time = Optional.ofNullable(planEnd)
@@ -94,24 +105,35 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
                 switch (s.value) {
                     case CHARGE_MODE_EXCESS -> EXCESS_CHARGING;
                     case CHARGE_MODE_SMART -> SMART_CHARGING;
-                    //fixme always EXCESS_CHARGING_STOPPED,
-                    // no matter what mode the charger was in before stop
-                    case CHARGE_MODE_STOP -> EXCESS_CHARGING_STOPPED;
-                    //fixme fast charging not supported
+                    case CHARGE_MODE_STOP -> {
+                        if (state.possibleValues == null)
+                            throw new IllegalArgumentException("possible values of "
+                                    + ChannelId.Parameter.CHARGE_MODE + " not provided");
+                        if (Arrays.asList(state.possibleValues).contains(CHARGE_MODE_FAST)) {
+                            yield FAST_CHARGING_STOPPED;
+                        } else {
+                            //fixme always EXCESS_CHARGING_STOPPED,
+                            // no matter what mode the charger was in before stop
+                            yield EXCESS_CHARGING_STOPPED;
+                        }
+                    }
+                    case CHARGE_MODE_FAST -> FAST_CHARGING;
                     default ->
                             throw new IllegalArgumentException("unknown charge state " + s.value);
                 }).orElse(UNCONNECTED);
+        Log.i("EVChargeInfo", "state=" + chState);
         this.goal.postValue(goal);
+        this.chargeALim.postValue(lim);
         if (time != null) this.planEndTime.postValue(time);
         if (isConnected()) this.chargerState.postValue(chState);
     }
 
-    private synchronized void setConnected(boolean connected) {
-        this.connected = connected;
-    }
-
     private synchronized boolean isConnected() {
         return this.connected;
+    }
+
+    private synchronized void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     @Override
@@ -137,5 +159,10 @@ public class EVChargeInfoAdapter extends BaseProvider implements ChargeInfoProvi
     @Override
     public LiveData<LocalDateTime> planEndTime() {
         return planEndTime;
+    }
+
+    @Override
+    public LiveData<Integer> chargeAlim() {
+        return chargeALim;
     }
 }

@@ -44,6 +44,8 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
             goal = new MutableLiveData<>(null);
     private final MutableLiveData<LocalDateTime> planEndTime = new MutableLiveData<>();
 
+    private final MutableLiveData<Integer> chargeALim = new MutableLiveData<>(16);
+
 
     @Override
     protected void update() {
@@ -92,6 +94,11 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
     @Override
     public LiveData<LocalDateTime> planEndTime() {
         return planEndTime;
+    }
+
+    @Override
+    public LiveData<Integer> chargeAlim() {
+        return chargeALim;
     }
 
     @Override
@@ -144,5 +151,15 @@ public class DemoChargingAdapter extends BaseProvider implements ChargeInfoProvi
         chargerState.setValue(state);
         evConsumption.setValue(0.0);
         onStopped.run();
+    }
+
+    @Override
+    public void setChargeALim(int limit, Runnable onSetLimit) {
+        synchronized (this) {
+            if (!_state.isQuickCharge())
+                throw new IllegalStateException("can't set limit in state " + _state);
+        }
+        chargeALim.setValue(limit);
+        onSetLimit.run();
     }
 }

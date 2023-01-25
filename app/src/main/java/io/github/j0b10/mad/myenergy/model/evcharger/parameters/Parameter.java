@@ -1,6 +1,7 @@
 package io.github.j0b10.mad.myenergy.model.evcharger.parameters;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Parameter {
@@ -8,16 +9,18 @@ public class Parameter {
     public final Boolean editable;
     public final Instant timestamp;
     public final String value;
+    public final String[] possibleValues;
 
-    public Parameter(String channelId, Boolean editable, Instant timestamp, String value) {
+    public Parameter(String channelId, Boolean editable, Instant timestamp, String value, String[] possibleValues) {
         this.channelId = channelId;
         this.editable = editable;
         this.timestamp = timestamp;
         this.value = value;
+        this.possibleValues = possibleValues;
     }
 
     public Parameter(String channelId, String value, Instant timestamp) {
-        this(channelId, null, timestamp, value);
+        this(channelId, null, timestamp, value, null);
     }
 
     @Override
@@ -44,6 +47,7 @@ public class Parameter {
                 ", editable=" + editable +
                 ", timestamp=" + timestamp +
                 ", value='" + value + '\'' +
+                ", possibleValues=" + Arrays.toString(possibleValues) +
                 '}';
     }
 }
